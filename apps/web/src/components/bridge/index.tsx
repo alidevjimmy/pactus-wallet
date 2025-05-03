@@ -5,22 +5,24 @@ import './style.css'
 
 const BridgePac: React.FC = () => {
   return (
-    <button 
+    <a
+      href="https://wrapto.app/"
+      target="_blank"
+      rel="noopener noreferrer"
       className="btn btn-bridge btn-sm bridge-button"
-      type="button"
-      aria-label="Bridge PAC tokens"
+      aria-label="Bridge PAC tokens on Wrapto"
     >
       <span className="bridge-button__icon">
-        <Image 
-          src={bridgeIcon} 
-          alt="" 
-          width={20} 
+        <Image
+          src={bridgeIcon}
+          alt=""
+          width={20}
           height={20}
           aria-hidden="true"
         />
       </span>
       <span className="bridge-button__text">Bridge</span>
-    </button>
+    </a>
   )
 }
 

@@ -3,7 +3,7 @@
 .transactions-history {
     width: 100%;
     border-radius: var(--radius-md);
-    background: var(--color-surface);
+    background: #15191C;
     padding: var(--spacing-md);
     overflow: hidden;
     display: flex;
@@ -20,7 +20,7 @@
 .transactions-history__header {
     position: sticky;
     top: 0;
-    background: var(--color-surface);
+    background: #15191C;
     z-index: 1;
     padding-bottom: var(--spacing-sm);
 }
@@ -36,6 +36,7 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     width: 100%;
+    background: #15191C;
 }
 
 .transactions-history__cell {
@@ -67,7 +68,7 @@
 }
 
 .transactions-history__body .transactions-history__row:hover {
-    background-color: var(--color-surface-light);
+    background-color: #1E2328;
 }
 
 .transactions-history__empty {
@@ -77,6 +78,7 @@
     padding: var(--spacing-lg);
     color: var(--color-text-tertiary);
     font-size: var(--font-size-sm);
+    background: #15191C;
 }
 
 /* Custom scrollbar styling for the transaction body */
@@ -104,7 +106,7 @@
         padding: var(--spacing-xs);
         font-size: 11px;
     }
-    
+
     .transactions-history {
         padding: var(--spacing-sm);
     }
@@ -115,7 +117,7 @@
     .transactions-history__table {
         min-width: 600px;
     }
-    
+
     .transactions-history {
         overflow-x: auto;
     }

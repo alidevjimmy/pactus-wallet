@@ -5,11 +5,12 @@ import Header from '@/components/header';
 import Sidebar from '@/components/sidebar';
 import RefetchBalance from '@/components/refetch';
 import Image from 'next/image';
-import { searchIcon, simpleLogo } from '@/assets';
+import { searchIcon, simpleLogo, transactions } from '@/assets';
 import SendPac from '@/components/send';
 import ReceivePac from '@/components/receive';
 import BridgePac from '@/components/bridge';
 import { useBalance } from '@/wallet/hooks/use-balance';
+import TransactionsHistory from '@/components/transactions-history';
 
 const Dashboard = () => {
   const { balance } = useBalance();
@@ -80,19 +81,22 @@ const Dashboard = () => {
               <h2 className="dashboard__activity-title">Overall Activity</h2>
 
               <div className="dashboard__activity-search">
+                <label htmlFor="search-transactions" className="visually-hidden">
+                  Search transactions
+                </label>
                 <Image
                   src={searchIcon}
                   alt=""
+                  aria-hidden="true"
                   width={16}
                   height={16}
                   className="dashboard__search-icon"
-                  aria-hidden="true"
                 />
                 <input
+                  id="search-transactions"
+                  className="dashboard__search-input"
                   type="search"
                   placeholder="Search by tx hash or address"
-                  className="dashboard__search-input"
-                  aria-label="Search by tx hash or address"
                 />
               </div>
 
@@ -123,26 +127,8 @@ const Dashboard = () => {
 
             <hr className="dashboard__divider" />
 
-            <div className="dashboard__transactions">
-              <table className="dashboard__transactions-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>TX Hash</th>
-                    <th>Sender</th>
-                    <th>Receiver</th>
-                    <th>Amount</th>
-                    <th>Fee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan={6} className="dashboard__no-transactions">
-                      No transactions found
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="dashboard__transactions-list">
+              <TransactionsHistory transactions={transactions} height={'90%'} />
             </div>
           </section>
         </div>

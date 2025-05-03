@@ -4,7 +4,7 @@ import './style.css';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
 import Image from 'next/image';
-import { copyIcon, showPasswordIcon, simpleLogo, successIcon } from '@/assets';
+import { copyIcon, showPasswordIcon, simpleLogo, successIcon, searchIcon, transactions } from '@/assets';
 import SendPac from '@/components/send';
 import BridgePac from '@/components/bridge';
 import QRCode from 'react-qr-code';
@@ -13,6 +13,7 @@ import { useSearchParams } from 'next/navigation';
 import { useBalance } from '@/wallet/hooks/use-balance';
 import ShowPrivateKeyModal from '@/components/password-modal';
 import PrivateKeyDisplayModal from '@/components/address-infom-modal';
+import TransactionsHistory from '@/components/transactions-history';
 
 const Wallet = () => {
   const [copied, setCopied] = useState(false);
@@ -55,6 +56,11 @@ const Wallet = () => {
     setShowPrivateKeyModal(true);
   };
 
+  const handleDeleteAccount = () => {
+    // TODO: Implement delete account functionality
+    console.log('Delete account:', addressData?.address);
+  };
+
   return (
     <Suspense fallback={<div className="wallet__loading">Loading...</div>}>
       <main className="wallet">
@@ -79,6 +85,21 @@ const Wallet = () => {
                     <h2 className="wallet__balance-heading">Balance</h2>
                     <button className="wallet__show-private-key" onClick={handleShowPrivateKey}>
                       <Image src={showPasswordIcon} alt="" width={24} height={24} />
+                    </button>
+                    <button
+                      className="wallet__delete-account"
+                      onClick={handleDeleteAccount}
+                      aria-label="Delete account"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 5.98C17.67 5.65 14.32 5.48 10.98 5.48C9 5.48 7.02 5.58 5.04 5.78L3 5.98" stroke="#FF4940" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.5 4.97L8.72 3.66C8.88 2.71 9 2 10.69 2H13.31C15 2 15.13 2.75 15.28 3.67L15.5 4.97" stroke="#FF4940" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.8504 9.14L18.2004 19.21C18.0904 20.78 18.0004 22 15.2104 22H8.79039C6.00039 22 5.91039 20.78 5.80039 19.21L5.15039 9.14" stroke="#FF4940" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10.3301 16.5H13.6601" stroke="#FF4940" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9.5 12.5H14.5" stroke="#FF4940" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+
+
                     </button>
                   </div>
 
@@ -119,6 +140,54 @@ const Wallet = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section className="wallet__activity">
+            <div className="wallet__activity-header">
+              <h2 className="wallet__activity-title">Activity</h2>
+
+              <div className="wallet__activity-search">
+                <label htmlFor="search-account-transactions" className="visually-hidden">
+                  Search transactions
+                </label>
+                <Image
+                  src={searchIcon}
+                  alt=""
+                  aria-hidden="true"
+                  width={16}
+                  height={16}
+                  className="wallet__search-icon"
+                />
+                <input
+                  id="search-account-transactions"
+                  className="wallet__search-input"
+                  type="search"
+                  placeholder="Search by tx hash or address"
+                />
+              </div>
+
+              <div className="wallet__activity-filters">
+                <button type="button" className="wallet__filter-button" aria-pressed="false">
+                  1D
+                </button>
+                <button type="button" className="wallet__filter-button" aria-pressed="false">
+                  7D
+                </button>
+                <button
+                  type="button"
+                  className="wallet__filter-button wallet__filter-button--active"
+                  aria-pressed="true"
+                >
+                  All
+                </button>
+              </div>
+            </div>
+
+            <hr className="wallet__divider" />
+
+            <div className="wallet__transactions-list">
+              <TransactionsHistory transactions={transactions} height={'90%'} />
             </div>
           </section>
         </div>

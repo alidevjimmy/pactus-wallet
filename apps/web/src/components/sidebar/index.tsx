@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './style.css';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import {
   documentationIcon,
   FAQsIcon,
@@ -14,6 +15,7 @@ import {
   ReportIcon,
   searchIcon,
   settingsIcon,
+  activityIcon,
 } from '@/assets';
 import BorderBeam from '../border-beam';
 import { useWallet } from '@/wallet';
@@ -116,17 +118,26 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
+
+        <button
+          type="button"
+          className={`sidebar__nav-item ${isActiveRoute('/activity') ? 'sidebar__nav-item--active' : ''}`}
+          onClick={() => navigate('/activity')}
+          aria-current={isActiveRoute('/activity') ? 'page' : undefined}
+        >
+          <Image src={activityIcon} alt="" aria-hidden="true" />
+          <span className="sidebar__nav-label">Activity</span>
+        </button>
       </nav>
 
       <div className="sidebar__footer">
-        <button
-          type="button"
+        <Link
+          href="/settings/general"
           className={`sidebar__nav-item ${isActiveRoute('/settings') ? 'sidebar__nav-item--active' : ''}`}
-          aria-current={isActiveRoute('/settings') ? 'page' : undefined}
         >
           <Image src={settingsIcon} alt="" aria-hidden="true" />
           <span className="sidebar__nav-label">Settings</span>
-        </button>
+        </Link>
 
         <button
           type="button"

@@ -1,0 +1,59 @@
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.wallet-info__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.wallet-info__label {
+  color: #D2D3E0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.wallet-info__value {
+  color: #858699;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+.settings-button {
+  background-color: #15191C;
+  border: 1px solid #1D2328;
+  border-radius: var(--radius-sm);
+  color: #858699;
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  width: 100%;
+  height: 40px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.settings-button:hover {
+  border-color: var(--color-border-hover);
+  background-color: #1D2328;
+}
+
+.settings-button:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-alpha);
+}
+
+.settings-button--danger {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.settings-button--danger:hover {
+  background-color: var(--color-error-alpha);
+  border-color: var(--color-error);
+}

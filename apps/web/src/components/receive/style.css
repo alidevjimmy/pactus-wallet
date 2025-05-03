@@ -10,7 +10,7 @@
   height: 38px;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-md);
-  background: var(--color-surface-light);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
@@ -18,7 +18,7 @@
 }
 
 .receive-button:hover {
-  background-color: var(--color-surface-medium);
+  background-color: var(--color-surface-light);
 }
 
 .receive-button:focus-visible {
@@ -53,7 +53,7 @@
   .receive-button {
     transition: none;
   }
-  
+
   .receive-button:active {
     transform: none;
   }

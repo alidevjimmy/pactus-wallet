@@ -5,11 +5,12 @@ import Header from '@/components/header';
 import Sidebar from '@/components/sidebar';
 import RefetchBalance from '@/components/refetch';
 import Image from 'next/image';
-import { simpleLogo } from '@/assets';
+import { searchIcon, simpleLogo } from '@/assets';
 import SendPac from '@/components/send';
 import ReceivePac from '@/components/receive';
 import BridgePac from '@/components/bridge';
 import { useBalance } from '@/wallet/hooks/use-balance';
+
 const Dashboard = () => {
   const { balance } = useBalance();
   return (
@@ -71,6 +72,77 @@ const Dashboard = () => {
                 </div>
                 <span className="dashboard__stat-value">0</span>
               </div>
+            </div>
+          </section>
+
+          <section className="dashboard__activity">
+            <div className="dashboard__activity-header">
+              <h2 className="dashboard__activity-title">Overall Activity</h2>
+
+              <div className="dashboard__activity-search">
+                <Image
+                  src={searchIcon}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="dashboard__search-icon"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  placeholder="Search by tx hash or address"
+                  className="dashboard__search-input"
+                  aria-label="Search by tx hash or address"
+                />
+              </div>
+
+              <div className="dashboard__activity-filters">
+                <button
+                  type="button"
+                  className="dashboard__filter-button"
+                  aria-pressed="false"
+                >
+                  1D
+                </button>
+                <button
+                  type="button"
+                  className="dashboard__filter-button"
+                  aria-pressed="false"
+                >
+                  7D
+                </button>
+                <button
+                  type="button"
+                  className="dashboard__filter-button dashboard__filter-button--active"
+                  aria-pressed="true"
+                >
+                  All
+                </button>
+              </div>
+            </div>
+
+            <hr className="dashboard__divider" />
+
+            <div className="dashboard__transactions">
+              <table className="dashboard__transactions-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>TX Hash</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Amount</th>
+                    <th>Fee</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan={6} className="dashboard__no-transactions">
+                      No transactions found
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
         </div>

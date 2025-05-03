@@ -1,0 +1,28 @@
+.refetch-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    margin-left: var(--spacing-sm);
+    border-radius: var(--radius-circle);
+    transition: background-color var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.refetch-button:hover {
+    background-color: var(--color-surface-light);
+}
+
+.refetch-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Support for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .refetch-button {
+        transition: none;
+    }
+}

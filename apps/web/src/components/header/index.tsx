@@ -17,17 +17,17 @@ const Header: React.FC<{ title: string }> = ({ title }) => {
     <header className="header">
       <div className="header__content">
         <h1 className="header__title">{title}</h1>
-        <button 
+        <button
           type="button"
-          className="btn btn-icon header__logout-button" 
+          className="btn btn-icon header__logout-button"
           onClick={handleLogout}
           aria-label="Log out of wallet"
         >
-          <Image 
-            src={logoutIcon} 
-            width={32} 
-            height={32} 
-            alt="" 
+          <Image
+            src={logoutIcon}
+            width={24}
+            height={24}
+            alt=""
             aria-hidden="true"
           />
         </button>

@@ -1,45 +1,24 @@
 'use client';
-import React, { useState } from 'react';
-import { useWallet } from '@/wallet';
+import React from 'react';
 import './style.css';
 
 const WalletManagerPage = () => {
-  const { wallet } = useWallet();
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-
   return (
     <div className="settings-content settings-content--full">
-      <div className="settings-section">
-        <h3 className="settings-section__title">Wallet Information</h3>
-        <div className="settings-section__content">
-          <div className="wallet-info">
-            <div className="wallet-info__item">
-              <span className="wallet-info__label">Name</span>
-              <span className="wallet-info__value">{wallet?.getName()}</span>
-            </div>
-            <div className="wallet-info__item">
-              <span className="wallet-info__label">Created Date</span>
-              <span className="wallet-info__value">March 14, 2024</span>
-            </div>
-          </div>
-        </div>
+      <div className="account-header">
+        <span className="account-count">1 / <span className="account-count-max">200</span></span>
+        <div className="account-separator"></div>
+        <button className="add-account-button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 3.33334V12.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M3.33203 8H12.6654" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Add Account
+        </button>
       </div>
 
       <div className="settings-section">
-        <h3 className="settings-section__title">Security</h3>
-        <div className="settings-section__content">
-          <button
-            className="settings-button"
-            onClick={() => setIsChangingPassword(true)}
-          >
-            Change Password
-          </button>
-          <button
-            className="settings-button settings-button--danger"
-          >
-            Delete Wallet
-          </button>
-        </div>
+
       </div>
     </div>
   );

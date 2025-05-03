@@ -48,6 +48,11 @@ const Sidebar = () => {
   };
 
   const isActiveRoute = (route: string) => {
+    // Special case for settings routes
+    if (route === '/settings/general') {
+      return pathname?.includes('/settings');
+    }
+
     const { path, queryParams } = parseRoute(route);
     if (pathname !== path) return false;
     for (const [key, value] of queryParams) {
@@ -133,7 +138,7 @@ const Sidebar = () => {
       <div className="sidebar__footer">
         <Link
           href="/settings/general"
-          className={`sidebar__nav-item ${isActiveRoute('/settings') ? 'sidebar__nav-item--active' : ''}`}
+          className={`sidebar__nav-item ${isActiveRoute('/settings/general') ? 'sidebar__nav-item--active' : ''}`}
         >
           <Image src={settingsIcon} alt="" aria-hidden="true" />
           <span className="sidebar__nav-label">Settings</span>

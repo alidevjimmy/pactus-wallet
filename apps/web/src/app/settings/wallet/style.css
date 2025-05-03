@@ -57,3 +57,86 @@
   background-color: var(--color-error-alpha);
   border-color: var(--color-error);
 }
+
+.account-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1D2328;
+  width: 100%;
+}
+
+.account-count {
+  color: #858699;
+  font-size: 12px;
+}
+
+.account-count-max {
+  color: #4C4F6B;
+}
+
+.account-separator {
+  width: 1px;
+  height: 20px;
+  background-color: #2C2D3C;
+}
+
+.add-account-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #1D2328;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.add-account-button:hover {
+  opacity: 0.9;
+}
+
+.add-account-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.transactions-history {
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.transactions-history__row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 120px;
+  gap: 16px;
+  width: 100%;
+  background: transparent;
+}
+
+.transactions-history__header {
+  position: sticky;
+  top: 0;
+  background: transparent;
+  z-index: 1;
+  padding-bottom: var(--spacing-sm);
+}
+
+.transactions-history__body .transactions-history__row {
+  border-bottom: none;
+}
+
+.transactions-history__body .transactions-history__row:hover {
+  background-color: #1D2328;
+}

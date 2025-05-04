@@ -1,0 +1,159 @@
+.transaction-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+.transaction-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.transaction-modal__label {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.transaction-modal__value-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.transaction-modal__value {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  word-break: break-all;
+}
+
+.transaction-modal__value--hash,
+.transaction-modal__value--address {
+  font-family: monospace;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.transaction-modal__value-with-icon {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.transaction-modal__copy {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  cursor: pointer;
+  border-radius: var(--radius-circle);
+  transition: background-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transaction-modal__copy:hover {
+  background-color: var(--color-surface-light);
+}
+
+.transaction-modal__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.modal-button {
+  min-width: 120px;
+  text-align: center;
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-surface);
+  border-color: var(--color-border-hover);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-cancel {
+  background: linear-gradient(90deg, #D10000 0%, #FF2D2D 100%);
+  border: none;
+  color: white;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+/* Support for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .transaction-modal__copy,
+  .modal-button {
+    transition: none;
+  }
+}
+
+.countdown-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.countdown {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  margin-right: var(--spacing-xs);
+}
+
+.countdown-number {
+  fill: white;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-base);
+}
+
+.countdown-circle-bg {
+  fill: #2C2D3C;
+  stroke: none;
+}
+
+.countdown-circle {
+  stroke: url(#countdown-gradient);
+  stroke-width: 2.5;
+  fill: none;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 1s linear;
+}

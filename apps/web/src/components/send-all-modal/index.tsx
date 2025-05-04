@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Modal from '../modal';
+import SendReviewModal from '../send-review-modal';
 import './style.css';
 import Image from 'next/image';
 import { simpleLogo, hidePasswordIcon, showPasswordIcon } from '@/assets';
@@ -20,7 +21,8 @@ interface SendModalProps {
 }
 
 const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const { accounts } = useAccount();
+  const { getAccountList, getMnemonic } = useAccount();
+  const accounts = getAccountList();
   const [formData, setFormData] = useState({
     from: '',
     to: '',
@@ -32,10 +34,16 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showReview, setShowReview] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'password') {
+      setIsPasswordInvalid(false);
+    }
     setError('');
   };
 
@@ -49,22 +57,80 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
     setFormData(prev => ({ ...prev, fee: '0.001' }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setIsPasswordInvalid(false);
+
+    try {
+      setIsSubmitting(true);
+      // Validate password by attempting to get the mnemonic
+      await getMnemonic(formData.password);
+      setShowReview(true);
+    } catch (err) {
+      setIsPasswordInvalid(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBack = () => {
+    setShowReview(false);
+    setError('');
+    setIsConfirmed(false);
+    setIsPasswordInvalid(false);
+  };
+
+  const handleCancel = () => {
+    setIsConfirmed(false);
+  };
+
+  const handleSubmit = async () => {
+    if (!isConfirmed) {
+      setIsConfirmed(true);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       await onSubmit(formData);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setShowReview(false);
+      setIsConfirmed(false);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const isFormValid = () => {
+    return (
+      formData.from !== '' &&
+      formData.to !== '' &&
+      formData.amount !== '' &&
+      formData.fee !== '' &&
+      formData.password !== ''
+    );
+  };
+
+  if (showReview) {
+    return (
+      <SendReviewModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={handleSubmit}
+        onBack={handleBack}
+        onCancel={handleCancel}
+        data={formData}
+        isSubmitting={isSubmitting}
+      />
+    );
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Send">
-      <form className="send-form" onSubmit={handleSubmit}>
+      <form className="send-form" onSubmit={handleNext}>
         <div className="modal-input-container">
           <label className="modal-label" htmlFor="from">
             From
@@ -80,7 +146,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
             <option value="">Select account</option>
             {accounts?.map(account => (
               <option key={account.address} value={account.address}>
-                {account.label || account.address}
+                {account.emoji} {account.name} ({account.address})
               </option>
             ))}
           </select>
@@ -102,7 +168,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
           />
         </div>
 
-        <div className="modal-input-container">
+        <div className="modal-input-container half-width">
           <label className="modal-label" htmlFor="amount">
             Amount
           </label>
@@ -134,7 +200,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
           </div>
         </div>
 
-        <div className="modal-input-container">
+        <div className="modal-input-container half-width">
           <label className="modal-label" htmlFor="fee">
             Network Fee
           </label>
@@ -151,7 +217,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
               name="fee"
               type="text"
               className="modal-input with-icon"
-              placeholder="0.001"
+              placeholder="0.00"
               value={formData.fee}
               onChange={handleInputChange}
               required
@@ -196,11 +262,12 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
               id="password"
               name="password"
               type={showPassword ? 'text' : 'password'}
-              className="modal-input"
+              className={`modal-input ${isPasswordInvalid ? 'input-error' : ''}`}
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleInputChange}
               required
+              aria-invalid={isPasswordInvalid}
             />
             <button
               type="button"
@@ -228,9 +295,9 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
           <button
             type="submit"
             className="modal-button btn-primary"
-            disabled={isSubmitting}
+            disabled={!isFormValid() || isSubmitting}
           >
-            {isSubmitting ? 'Sending...' : 'Send'}
+            {isSubmitting ? 'Verifying...' : 'Next'}
           </button>
         </div>
       </form>

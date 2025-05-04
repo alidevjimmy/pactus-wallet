@@ -104,6 +104,37 @@ export function useAccount() {
     [wallet]
   );
 
+  const deleteAccount = useCallback(
+    async (address: string, walletOverride?: Wallet | null) => {
+      setError(null);
+
+      const targetWallet = walletOverride ?? wallet;
+      if (!targetWallet) {
+        setError('Wallet is not available');
+        throw new Error('Wallet is not available');
+      }
+
+      try {
+        const addressInfo = targetWallet.getAddressInfo(address);
+        if (!addressInfo) {
+          throw new Error('Address not found');
+        }
+
+        const deleted = targetWallet.deleteAddress(address);
+        if (!deleted) {
+          throw new Error('Failed to delete address');
+        }
+
+        return true;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to delete account';
+        setError(errorMessage);
+        throw err;
+      }
+    },
+    [wallet]
+  );
+
   const getMnemonic = useCallback(
     async (password: string, walletOverride?: Wallet | null) => {
       setError(null);
@@ -140,6 +171,7 @@ export function useAccount() {
     getAccountByAddress,
     getAddressInfo,
     getMnemonic,
+    deleteAccount,
     error,
     clearError,
   };

@@ -1,11 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 import './style.css';
-import { showPasswordIcon } from '@/assets';
+import { showPasswordIcon, copyIcon, successIcon } from '@/assets';
 import Image from 'next/image';
 import ShowPrivateKeyModal from '@/components/password-modal';
 import PrivateKeyDisplayModal from '@/components/address-infom-modal';
 import AddAccountModal from '@/components/add-account-modal';
+import ConfirmModal from '@/components/confirm-modal';
+import DeleteAccountModal from '@/components/delete-account-modal';
 import { useAccount } from '@/wallet';
 import type { AddressInfo } from '@/wallet/hooks/use-account';
 
@@ -13,10 +15,13 @@ const WalletManagerPage = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showPrivateKeyModal, setShowPrivateKeyModal] = useState(false);
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
+  const [showDeletePasswordModal, setShowDeletePasswordModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [addressInfo, setAddressInfo] = useState<AddressInfo | null>(null);
-  const { getAccountList } = useAccount();
+  const { getAccountList, deleteAccount } = useAccount();
   const accounts = getAccountList();
+  const [copiedAddresses, setCopiedAddresses] = useState<{[key: string]: boolean}>({});
 
   const handleShowPrivateKey = (address: string) => {
     setSelectedAddress(address);
@@ -40,6 +45,33 @@ const WalletManagerPage = () => {
     };
     setAddressInfo(info);
     setShowPrivateKeyModal(true);
+  };
+
+  const handleDeleteClick = (address: string) => {
+    setSelectedAddress(address);
+    setShowDeletePasswordModal(true);
+  };
+
+  const handleDeletePasswordVerified = () => {
+    setShowDeleteConfirmModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await deleteAccount(selectedAddress);
+      setShowDeleteConfirmModal(false);
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      // TODO: Show error message to user
+    }
+  };
+
+  const handleCopyAddress = (address: string) => {
+    navigator.clipboard.writeText(address);
+    setCopiedAddresses(prev => ({ ...prev, [address]: true }));
+    setTimeout(() => {
+      setCopiedAddresses(prev => ({ ...prev, [address]: false }));
+    }, 2000);
   };
 
   return (
@@ -73,7 +105,22 @@ const WalletManagerPage = () => {
                   </div>
                 </div>
                 <div className="wallet-table-cell">
-                  <span className="account-address">{account.address}</span>
+                  <div className="account-address-container">
+                    <span className="account-address">{account.address}</span>
+                    <button
+                      className="copy-button"
+                      onClick={() => handleCopyAddress(account.address)}
+                      aria-label="Copy address to clipboard"
+                      title="Copy address to clipboard"
+                    >
+                      <Image
+                        src={copiedAddresses[account.address] ? successIcon : copyIcon}
+                        alt={copiedAddresses[account.address] ? 'Copied successfully' : 'Copy to clipboard'}
+                        width={20}
+                        height={20}
+                      />
+                    </button>
+                  </div>
                 </div>
                 <div className="wallet-table-cell wallet-table-cell--right">
                   <div className="account-actions">
@@ -84,7 +131,11 @@ const WalletManagerPage = () => {
                     >
                       <Image src={showPasswordIcon} alt="" width={20} height={20} />
                     </button>
-                    <button className="action-button" title="Delete">
+                    <button
+                      className="action-button"
+                      title="Delete Account"
+                      onClick={() => handleDeleteClick(account.address)}
+                    >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21 5.98C17.67 5.65 14.32 5.48 10.98 5.48C9 5.48 7.02 5.58 5.04 5.78L3 5.98" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M8.5 4.97L8.72 3.66C8.88 2.71 9 2 10.69 2H13.31C15 2 15.13 2.75 15.28 3.67L15.5 4.97" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -118,6 +169,23 @@ const WalletManagerPage = () => {
       <AddAccountModal
         isOpen={showAddAccountModal}
         onClose={() => setShowAddAccountModal(false)}
+      />
+
+      <DeleteAccountModal
+        isOpen={showDeletePasswordModal}
+        onClose={() => setShowDeletePasswordModal(false)}
+        onPasswordVerified={handleDeletePasswordVerified}
+        address={selectedAddress}
+      />
+
+      <ConfirmModal
+        isOpen={showDeleteConfirmModal}
+        onClose={() => setShowDeleteConfirmModal(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Account"
+        message="Are you sure you want to delete this account? This action cannot be undone."
+        confirmText="Delete"
+        isDestructive={true}
       />
     </div>
   );

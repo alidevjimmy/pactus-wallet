@@ -423,4 +423,17 @@ export class Wallet {
 
     return endpoints[randomIndex];
   }
+
+  /**
+   * Delete an address from the wallet
+   * @param address The address to delete
+   * @returns True if the address was deleted, false if it didn't exist
+   */
+  deleteAddress(address: string): boolean {
+    const deleted = this.ledger.addresses.delete(address);
+    if (deleted) {
+      this.saveLedger();
+    }
+    return deleted;
+  }
 }

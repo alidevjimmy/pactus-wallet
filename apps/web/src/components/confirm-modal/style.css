@@ -20,15 +20,25 @@
 }
 
 .btn-danger {
-  background-color: var(--color-error);
+  background: linear-gradient(to right, #8B0000, #FF0000);
   color: white;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .btn-danger:hover {
-  background-color: var(--color-error-dark);
+  background: linear-gradient(to right, #6B0000, #CC0000);
+  transform: translateY(-1px);
 }
 
 .btn-danger:disabled {
-  background-color: var(--color-error-light);
+  background: linear-gradient(to right, #A88B8B, #FFA0A0);
   cursor: not-allowed;
+  transform: none;
+}
+
+.confirm-modal__actions--single {
+  justify-content: flex-end;
 }

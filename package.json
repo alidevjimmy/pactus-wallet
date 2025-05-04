@@ -17,6 +17,7 @@
     "type-check": "yarn workspaces run type-check"
   },
   "dependencies": {
+    "qrcode.react": "^4.2.0",
     "typescript": "~5.5.3"
   },
   "devDependencies": {

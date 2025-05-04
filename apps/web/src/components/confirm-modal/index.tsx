@@ -40,15 +40,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <div className="confirm-modal">
         <p className="confirm-modal__message">{message}</p>
-        <div className="confirm-modal__actions">
-          <button
-            type="button"
-            className="modal-button btn btn-secondary"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            {cancelText}
-          </button>
+        <div className={`confirm-modal__actions ${isDestructive ? 'confirm-modal__actions--single' : ''}`}>
+          {!isDestructive && (
+            <button
+              type="button"
+              className="modal-button btn btn-secondary"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              {cancelText}
+            </button>
+          )}
           <button
             type="button"
             className={`modal-button btn ${isDestructive ? 'btn-danger' : 'btn-primary'}`}

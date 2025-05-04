@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../modal';
 import SendReviewModal from '../send-review-modal';
 import './style.css';
@@ -23,20 +23,39 @@ interface SendModalProps {
 const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const { getAccountList, getMnemonic } = useAccount();
   const accounts = getAccountList();
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     from: '',
     to: '',
     amount: '',
     fee: '',
     memo: '',
     password: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
+
+  // Reset all states when modal is closed
+  useEffect(() => {
+    if (!isOpen) {
+      resetSendProcess();
+    }
+  }, [isOpen]);
+
+  const resetSendProcess = () => {
+    setFormData(initialFormData);
+    setShowPassword(false);
+    setError('');
+    setIsSubmitting(false);
+    setShowReview(false);
+    setIsConfirmed(false);
+    setIsPasswordInvalid(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -94,6 +113,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
     try {
       setIsSubmitting(true);
       await onSubmit(formData);
+      resetSendProcess();
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -102,6 +122,11 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleClose = () => {
+    resetSendProcess();
+    onClose();
   };
 
   const isFormValid = () => {
@@ -118,7 +143,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
     return (
       <SendReviewModal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         onConfirm={handleSubmit}
         onBack={handleBack}
         onCancel={handleCancel}
@@ -129,7 +154,7 @@ const SendModal: React.FC<SendModalProps> = ({ isOpen, onClose, onSubmit }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Send">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Send">
       <form className="send-form" onSubmit={handleNext}>
         <div className="modal-input-container">
           <label className="modal-label" htmlFor="from">

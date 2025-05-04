@@ -35,7 +35,8 @@
 
 .transactions-history__row {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: 1fr 1.5fr 1fr 1fr 0.8fr 0.5fr;
+    gap: var(--spacing-sm);
     width: 100%;
     background: transparent;
 }

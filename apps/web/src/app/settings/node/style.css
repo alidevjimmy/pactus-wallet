@@ -1,0 +1,298 @@
+/* Import base wallet table styles */
+@import '../../settings/wallet/style.css';
+
+/* Node specific styles */
+.node-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.node-info__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.node-info__label {
+  color: #D2D3E0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.node-info__value {
+  color: #858699;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+.node-ping {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: rgba(15, 239, 158, 0.1);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.node-block-height {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: rgba(62, 116, 255, 0.1);
+  color: #3E74FF;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Switch button styles */
+.switch-button {
+  position: relative;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.switch-button__track {
+  width: 36px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.switch-button--enabled .switch-button__track {
+  background-color: var(--color-primary);
+}
+
+.switch-button__thumb {
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+}
+
+.switch-button--enabled .switch-button__thumb {
+  transform: translateX(16px);
+}
+
+.switch-button:focus-visible {
+  outline: none;
+}
+
+.switch-button:focus-visible .switch-button__track {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Adjust spacing in actions */
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Node Manager specific table grid */
+.settings-content .node-manager .wallet-table-header,
+.settings-content .node-manager .wallet-table-row {
+  grid-template-columns: 1fr 2fr 100px 130px 120px;
+}
+
+/* For smaller screens, adjust the grid layout */
+@media (max-width: 1024px) {
+  .settings-content .node-manager .wallet-table-header,
+  .settings-content .node-manager .wallet-table-row {
+    grid-template-columns: 1fr 1.5fr 80px 100px 100px;
+  }
+}
+
+/* For mobile screens, make it scrollable horizontally */
+@media (max-width: 768px) {
+  .settings-content .node-manager .wallet-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .settings-content .node-manager .wallet-table-header,
+  .settings-content .node-manager .wallet-table-row {
+    min-width: 720px;
+  }
+}
+
+/* Additional base styles that might be missing */
+.settings-content {
+  padding: var(--spacing-lg);
+  width: 100%;
+}
+
+.settings-content--full {
+  max-width: none;
+}
+
+.settings-section {
+  margin-top: var(--spacing-lg);
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1D2328;
+  width: 100%;
+}
+
+.account-count {
+  color: #858699;
+  font-size: 12px;
+}
+
+.account-count-max {
+  color: #4C4F6B;
+}
+
+.account-separator {
+  width: 1px;
+  height: 20px;
+  background-color: #2C2D3C;
+}
+
+.add-account-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #1D2328;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.add-account-button:hover {
+  opacity: 0.9;
+}
+
+.add-account-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.action-button svg {
+  color: currentColor;
+}
+
+.account-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.account-address-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.account-address {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 14px;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-button {
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-circle);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
+.copy-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(15, 239, 158, 0.2);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.action-button--rotating svg {
+  animation: rotate 1s linear infinite;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-button--refresh {
+  margin-right: 8px;
+  padding: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.action-button--refresh:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.action-button--refresh svg {
+  width: 16px;
+  height: 16px;
+}

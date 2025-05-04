@@ -9,20 +9,25 @@ import SendPac from '@/components/send';
 import BridgePac from '@/components/bridge';
 import QRCode from 'react-qr-code';
 import { useAccount, AddressInfo } from '@/wallet/hooks/use-account';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useBalance } from '@/wallet/hooks/use-balance';
 import ShowPrivateKeyModal from '@/components/password-modal';
 import PrivateKeyDisplayModal from '@/components/address-infom-modal';
 import TransactionsHistory from '@/components/transactions-history';
+import DeleteAccountModal from '@/components/delete-account-modal';
+import ConfirmModal from '@/components/confirm-modal';
 
 const Wallet = () => {
   const [copied, setCopied] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showPrivateKeyModal, setShowPrivateKeyModal] = useState(false);
+  const [showDeletePasswordModal, setShowDeletePasswordModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [addressInfo, setAddressInfo] = useState<(AddressInfo & { privateKeyHex: string }) | null>(
     null
   );
-  const { getAccountByAddress } = useAccount();
+  const { getAccountByAddress, deleteAccount } = useAccount();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const address = searchParams?.get('address') ?? '';
   const addressData = address ? getAccountByAddress(address) : null;
@@ -56,9 +61,27 @@ const Wallet = () => {
     setShowPrivateKeyModal(true);
   };
 
-  const handleDeleteAccount = () => {
-    // TODO: Implement delete account functionality
-    console.log('Delete account:', addressData?.address);
+  const handleDeleteClick = () => {
+    if (addressData?.address) {
+      setShowDeletePasswordModal(true);
+    }
+  };
+
+  const handleDeletePasswordVerified = () => {
+    setShowDeleteConfirmModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      if (addressData?.address) {
+        await deleteAccount(addressData.address);
+        setShowDeleteConfirmModal(false);
+        router.replace('/');
+      }
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      // TODO: Show error message to user
+    }
   };
 
   return (
@@ -88,7 +111,7 @@ const Wallet = () => {
                     </button>
                     <button
                       className="wallet__delete-account"
-                      onClick={handleDeleteAccount}
+                      onClick={handleDeleteClick}
                       aria-label="Delete account"
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -207,6 +230,23 @@ const Wallet = () => {
             privateKeyHex={addressInfo.privateKeyHex ?? ''}
           />
         )}
+
+        <DeleteAccountModal
+          isOpen={showDeletePasswordModal}
+          onClose={() => setShowDeletePasswordModal(false)}
+          onPasswordVerified={handleDeletePasswordVerified}
+          address={addressData?.address ?? ''}
+        />
+
+        <ConfirmModal
+          isOpen={showDeleteConfirmModal}
+          onClose={() => setShowDeleteConfirmModal(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Account"
+          message="Are you sure you want to delete this account? This action cannot be undone."
+          confirmText="Delete"
+          isDestructive={true}
+        />
       </main>
     </Suspense>
   );

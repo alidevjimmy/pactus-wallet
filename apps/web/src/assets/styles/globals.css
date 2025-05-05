@@ -87,7 +87,7 @@ body {
   overflow-x: hidden;
   background: var(--color-background);
   color: var(--color-text-secondary);
-  
+
   /* Prevent layout shifts */
   min-height: 100vh;
 }

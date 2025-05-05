@@ -6,9 +6,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(13, 17, 28, 0.75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background-color: rgba(29, 35, 40, 0.75);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,7 +29,7 @@
   width: 90%;
   max-width: 600px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(38, 43, 54, 0.8) 0%, rgba(22, 25, 32, 0.8) 100%);
+  background: #1D2328;
   box-shadow: 0px 20px 24px -4px rgba(0, 0, 0, 0.3);
   transform: translateY(-20px);
   transition: transform var(--transition-normal);
@@ -37,8 +37,8 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   z-index: 100000;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .modal-container.show {

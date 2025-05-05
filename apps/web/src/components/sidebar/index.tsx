@@ -21,6 +21,7 @@ import BorderBeam from '../border-beam';
 import { useWallet } from '@/wallet';
 import { useAccount } from '@/wallet/hooks/use-account';
 import AddAccountModal from '../add-account-modal';
+import FAQModal from '../faq-modal';
 
 // External links
 const REPOSITORY_URL = 'https://github.com/pactus-project/pactus-wallet/issues/new/choose';
@@ -31,6 +32,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
+  const [isFAQModalOpen, setIsFAQModalOpen] = useState(false);
   const navigate = useRouter().push;
 
   const openAddAccountModal = () => {
@@ -39,6 +41,14 @@ const Sidebar = () => {
 
   const closeAddAccountModal = () => {
     setIsAddAccountModalOpen(false);
+  };
+
+  const openFAQModal = () => {
+    setIsFAQModalOpen(true);
+  };
+
+  const closeFAQModal = () => {
+    setIsFAQModalOpen(false);
   };
 
   const parseRoute = (route: string) => {
@@ -156,6 +166,7 @@ const Sidebar = () => {
         <button
           type="button"
           className={`sidebar__nav-item ${isActiveRoute('/frequently-asked-questions') ? 'sidebar__nav-item--active' : ''}`}
+          onClick={openFAQModal}
           aria-current={isActiveRoute('/frequently-asked-questions') ? 'page' : undefined}
         >
           <Image src={FAQsIcon} alt="" aria-hidden="true" />
@@ -193,6 +204,7 @@ const Sidebar = () => {
       </div>
 
       <AddAccountModal isOpen={isAddAccountModalOpen} onClose={closeAddAccountModal} />
+      <FAQModal isOpen={isFAQModalOpen} onClose={closeFAQModal} />
     </aside>
   );
 };

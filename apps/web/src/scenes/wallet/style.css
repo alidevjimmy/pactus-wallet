@@ -5,6 +5,8 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 /* Content area */
@@ -13,6 +15,8 @@
   display: flex;
   flex-direction: column;
   margin-left: auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* Balance card section */
@@ -170,6 +174,8 @@
   border-radius: var(--radius-md);
   background: var(--color-surface-medium);
   box-shadow: var(--shadow-inset);
+  position: relative;
+  z-index: 1;
 }
 
 .wallet__activity-header {
@@ -178,6 +184,8 @@
   justify-content: space-between;
   padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-md);
   gap: var(--spacing-md);
+  position: relative;
+  z-index: 1;
 }
 
 .wallet__activity-title {
@@ -185,6 +193,8 @@
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   white-space: nowrap;
+  position: relative;
+  z-index: 1;
 }
 
 .wallet__activity-search {
@@ -197,6 +207,7 @@
   height: 38px;
   width: 650px;
   min-width: 400px;
+  z-index: 1;
 }
 
 .wallet__search-icon {
@@ -231,6 +242,8 @@
   box-shadow: var(--shadow-sm);
   height: 38px;
   padding: var(--spacing-xs);
+  position: relative;
+  z-index: 1;
 }
 
 .wallet__filter-button {

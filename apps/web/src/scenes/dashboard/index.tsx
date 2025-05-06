@@ -10,6 +10,7 @@ import ReceivePac from '@/components/receive';
 import BridgePac from '@/components/bridge';
 import { useBalance } from '@/wallet/hooks/use-balance';
 import TransactionsHistory from '@/components/transactions-history';
+import './style.css';
 
 const Dashboard = () => {
   const { balance } = useBalance();
@@ -75,47 +76,49 @@ const Dashboard = () => {
           </section>
 
           <section className="w-[98%] mx-auto my-[1%] rounded-lg bg-surface-medium shadow-inner">
-            <div className="flex items-center justify-between px-6 pt-6 pb-4 gap-4">
-              <h2 className="text-[#D2D3E0] text-lg font-semibold whitespace-nowrap">Overall Activity</h2>
+            <div className="grid grid-cols-[200px,1fr,auto] items-center gap-4 px-6 pt-6 pb-4">
+              <h2 className="text-[#D2D3E0] text-lg font-semibold">Overall Activity</h2>
 
-              <div className="relative flex rounded-lg border border-surface-medium bg-background shadow-sm h-[38px] w-[650px] min-w-[400px]">
-                <label htmlFor="search-transactions" className="sr-only">
-                  Search transactions
-                </label>
-                <Image
-                  src={searchIcon}
-                  alt=""
-                  aria-hidden="true"
-                  width={16}
-                  height={16}
-                  className="absolute left-2 top-1/2 -translate-y-1/2"
-                />
-                <input
-                  id="search-transactions"
-                  className="w-full h-full bg-transparent border-none outline-none pl-8 text-text-primary text-xs font-medium placeholder:text-text-tertiary"
-                  type="search"
-                  placeholder="Search by tx hash or address"
-                />
+              <div className="flex justify-center">
+                <div className="activity__search">
+                  <label htmlFor="search-transactions" className="visually-hidden">
+                    Search transactions
+                  </label>
+                  <Image
+                    src={searchIcon}
+                    alt=""
+                    aria-hidden="true"
+                    width={16}
+                    height={16}
+                    className="activity__search-icon"
+                  />
+                  <input
+                    id="search-transactions"
+                    className="activity__search-input"
+                    type="search"
+                    placeholder="Search by tx hash or address"
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center rounded-lg border border-surface-medium bg-background shadow-sm h-[38px] p-1">
+              <div className="activity__time-filter">
                 <button
                   type="button"
-                  className="text-text-tertiary text-xs font-medium px-2 py-1 rounded transition-colors hover:bg-surface-light focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  className="activity__filter-button"
                   aria-pressed="false"
                 >
                   1D
                 </button>
                 <button
                   type="button"
-                  className="text-text-tertiary text-xs font-medium px-2 py-1 rounded transition-colors hover:bg-surface-light focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  className="activity__filter-button"
                   aria-pressed="false"
                 >
                   7D
                 </button>
                 <button
                   type="button"
-                  className="text-text-primary text-xs font-medium px-2 py-1 rounded bg-surface-light transition-colors hover:bg-surface-light focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+                  className="activity__filter-button activity__filter-button--active"
                   aria-pressed="true"
                 >
                   All
@@ -123,7 +126,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <hr className="w-full h-px bg-[#66666640] border-none" />
+            <hr className="activity__divider" />
 
             <div className="px-6 py-4 w-full h-[90%]">
               <TransactionsHistory transactions={transactions} height={'90%'} />

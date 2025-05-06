@@ -32,7 +32,7 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose }) =>
     setAccountName(e.target.value);
     clearError();
   };
-  
+
   const handleEmojiSelect = (emoji: string) => {
     setAccountName(prevName => prevName + emoji);
     clearError();
@@ -71,10 +71,10 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose }) =>
             aria-describedby={error ? "account-error" : undefined}
           />
         </div>
-        
+
         <div className="emoji-ChooseNameWallet" role="group" aria-label="Emoji selector">
           {emojis.map((emoji, index) => (
-            <button 
+            <button
               key={`${index}-emoji`}
               type="button"
               onClick={() => handleEmojiSelect(emoji)}
@@ -84,7 +84,7 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose }) =>
             </button>
           ))}
         </div>
-        
+
         <div className="modal-input-container">
           <label className="modal-label" htmlFor="password">
             Password
@@ -101,8 +101,8 @@ const AddAccountModal: React.FC<AddAccountModalProps> = ({ isOpen, onClose }) =>
               aria-invalid={error ? "true" : "false"}
               aria-describedby={error ? "password-error" : undefined}
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={togglePasswordVisibility}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >

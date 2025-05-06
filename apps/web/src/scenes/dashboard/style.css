@@ -1,0 +1,99 @@
+/* Dashboard scene styles using BEM naming convention */
+
+.activity__search {
+    display: flex;
+    position: relative;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-surface-medium);
+    background: var(--color-background);
+    box-shadow: var(--shadow-sm);
+    height: 38px;
+    width: 650px;
+    min-width: 400px;
+}
+
+.activity__search-icon {
+    position: absolute;
+    left: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.activity__search-input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: calc(var(--spacing-xl) + var(--spacing-xs));
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.activity__search-input::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+.activity__time-filter {
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-surface-medium);
+    background: var(--color-background);
+    box-shadow: var(--shadow-sm);
+    height: 38px;
+    padding: var(--spacing-xs);
+}
+
+.activity__filter-button {
+    color: var(--color-text-tertiary);
+    text-align: center;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.activity__filter-button:hover {
+    background-color: var(--color-surface-light);
+}
+
+.activity__filter-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.activity__filter-button--active {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-light);
+}
+
+.activity__divider {
+    border: none;
+    height: 1px;
+    width: 100%;
+    background: var(--color-background);
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .activity__search {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .activity__time-filter {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* Support for reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .activity__filter-button {
+        transition: none;
+    }
+}

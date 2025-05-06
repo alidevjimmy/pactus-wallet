@@ -108,12 +108,12 @@ const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAddNode 
     <Modal isOpen={isOpen} onClose={handleModalClose} title="Add Node">
       <form className="flex flex-col gap-6 w-full mt-6" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-[#D2D3E0] text-sm font-medium mb-1" htmlFor="nodeTitle">
+          <label className="text-sm text-[#858699]" htmlFor="nodeTitle">
             Title
           </label>
           <input
             id="nodeTitle"
-            className="w-full px-4 py-3 rounded-lg bg-background text-text-primary text-sm border-none focus:outline-none focus:ring-2 focus:ring-[#00CC99] focus:ring-offset-2 focus:ring-offset-[#15191C] placeholder:text-[#4C4F6B]"
+            className="w-full rounded-lg bg-surface-medium px-4 py-2 text-sm text-text-secondary border border-transparent focus:border-primary focus:outline-none transition-colors"
             type="text"
             placeholder="Enter node title"
             value={nodeTitle}
@@ -123,13 +123,13 @@ const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAddNode 
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-sm text-[#858699] font-medium" htmlFor="nodeAddress">
+          <label className="text-sm text-[#858699]" htmlFor="nodeAddress">
             gRPC gateway node
           </label>
           <div className="flex items-center gap-2 w-full">
             <input
               id="nodeAddress"
-              className="flex-1 px-4 py-3 rounded-lg bg-background text-text-primary text-sm border-none focus:outline-none focus:ring-2 focus:ring-[#00CC99] focus:ring-offset-2 focus:ring-offset-[#15191C] placeholder:text-[#4C4F6B]"
+              className="flex-1 rounded-lg bg-surface-medium px-4 py-2 text-sm text-text-secondary border border-transparent focus:border-primary focus:outline-none transition-colors"
               type="text"
               placeholder="host.domain:port"
               value={nodeAddress}
@@ -138,7 +138,7 @@ const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAddNode 
             />
             <button
               type="button"
-              className={`h-10 w-10 flex items-center justify-center rounded-full bg-[#1D2328] text-[#858699] hover:bg-[#2A2F36] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`p-2 rounded-lg bg-[rgba(255,255,255,0.05)] text-[#858699] hover:bg-[rgba(255,255,255,0.1)] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 isRefreshing ? 'animate-spin' : ''
               }`}
               onClick={handleRefreshPing}
@@ -151,7 +151,7 @@ const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAddNode 
               </svg>
             </button>
             {pingStatus && (
-              <span className="inline-block px-2 py-1 rounded-xl bg-[rgba(0,204,153,0.1)] text-[#00CC99] text-xs font-medium">
+              <span className="inline-block px-2 py-1 rounded-xl bg-[rgba(15,239,158,0.1)] text-primary text-xs font-medium">
                 {pingStatus}
               </span>
             )}
@@ -159,13 +159,13 @@ const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAddNode 
         </div>
 
         <div className="flex items-center justify-between mt-2">
-          {error && <p className="text-sm text-[#FF4940] font-medium" role="alert">{error}</p>}
+          {error && <p className="text-sm text-[#FF4940]" role="alert">{error}</p>}
           <div className="flex items-center gap-6 ml-auto">
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className={`relative w-10 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#00CC99] focus:ring-offset-2 focus:ring-offset-[#15191C] ${
-                  isDefault ? 'bg-gradient-to-r from-[#00CC99] to-[#009966]' : 'bg-[rgba(255,255,255,0.1)]'
+                className={`relative w-9 h-5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
+                  isDefault ? 'bg-primary' : 'bg-[rgba(255,255,255,0.1)]'
                 }`}
                 onClick={() => setIsDefault(!isDefault)}
                 title={isDefault ? 'Remove as default' : 'Set as default'}
@@ -174,16 +174,16 @@ const AddNodeModal: React.FC<AddNodeModalProps> = ({ isOpen, onClose, onAddNode 
                 aria-checked={isDefault}
               >
                 <span
-                  className={`absolute top-1 left-1 block w-4 h-4 bg-white rounded-full transition-transform duration-200 ${
-                    isDefault ? 'translate-x-4' : 'translate-x-0'
+                  className={`absolute block w-4 h-4 bg-white rounded-full transition-transform duration-200 ${
+                    isDefault ? 'translate-x-4' : 'translate-x-0.5'
                   }`}
                 />
               </button>
-              <span className="text-sm text-[#858699] font-medium">Set as default</span>
+              <span className="text-sm text-[#858699]">Set as default</span>
             </div>
             <button
               type="submit"
-              className="h-10 px-6 rounded-lg bg-gradient-to-r from-[#00E8A2] to-[#00B37D] text-white text-sm font-semibold shadow-sm transition-all duration-200 hover:translate-y-[-1px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-primary to-primary text-white text-sm font-semibold transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isSubmitting || !nodeTitle.trim() || !nodeAddress.trim()}
             >
               {isSubmitting ? 'Adding...' : 'Add Node'}

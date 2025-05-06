@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import './style.css';
 import { showPasswordIcon, copyIcon, successIcon } from '@/assets';
 import Image from 'next/image';
 import ShowPrivateKeyModal from '@/components/password-modal';
@@ -75,11 +74,16 @@ const WalletManagerPage = () => {
   };
 
   return (
-    <div className="settings-content settings-content--full">
-      <div className="account-header">
-        <span className="account-count">{accounts.length} / <span className="account-count-max">200</span></span>
-        <div className="account-separator"></div>
-        <button className="add-account-button" onClick={() => setShowAddAccountModal(true)}>
+    <div className="w-full bg-surface-medium rounded-lg shadow-inner overflow-hidden">
+      <div className="flex items-center justify-end gap-4 p-4 border-b border-[#1D2328]">
+        <span className="text-[#858699] text-xs">
+          {accounts.length} / <span className="text-[#4C4F6B]">200</span>
+        </span>
+        <div className="w-px h-5 bg-[#2C2D3C]"></div>
+        <button
+          className="flex items-center gap-1.5 py-1.5 px-3 bg-[#1D2328] rounded-lg text-white text-xs hover:bg-[#2A2F36] transition-colors"
+          onClick={() => setShowAddAccountModal(true)}
+        >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8 3.33334V12.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M3.33203 8H12.6654" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -88,27 +92,24 @@ const WalletManagerPage = () => {
         </button>
       </div>
 
-      <div className="settings-section">
-        <div className="wallet-table">
-          <div className="wallet-table-header">
-            <div className="wallet-table-cell">Title</div>
-            <div className="wallet-table-cell">Address</div>
-            <div className="wallet-table-cell wallet-table-cell--right">Action</div>
+      <div className="p-4">
+        <div className="w-full rounded-lg overflow-hidden">
+          <div className="grid grid-cols-[2fr,3fr,1fr] gap-4 px-4 py-3 text-[#858699] text-xs font-medium border-b border-[#1D2328]">
+            <div>Title</div>
+            <div>Address</div>
+            <div className="text-right">Action</div>
           </div>
-          <div className="wallet-table-body">
+          <div className="divide-y divide-[#1D2328]">
             {accounts.map((account, index) => (
-              <div key={index} className="wallet-table-row">
-                <div className="wallet-table-cell">
-                  <div className="account-title">
-                    <span className="account-emoji">{account.emoji}</span>
-                    {account.name}
-                  </div>
+              <div key={index} className="grid grid-cols-[2fr,3fr,1fr] gap-4 px-4 py-3 hover:bg-[#1D2328] transition-colors">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{account.emoji}</span>
+                  <span className="text-[#D2D3E0] text-sm">{account.name}</span>
                 </div>
-                <div className="wallet-table-cell">
-                  <div className="account-address-container">
-                    <span className="account-address">{account.address}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#858699] text-sm font-medium truncate bg-gradient-to-r from-[#00CC99] to-[#009966] bg-clip-text text-transparent">{account.address}</span>
                     <button
-                      className="copy-button"
+                    className="p-1 hover:bg-[#2A2F36] rounded-md transition-colors"
                       onClick={() => handleCopyAddress(account.address)}
                       aria-label="Copy address to clipboard"
                       title="Copy address to clipboard"
@@ -121,18 +122,16 @@ const WalletManagerPage = () => {
                       />
                     </button>
                   </div>
-                </div>
-                <div className="wallet-table-cell wallet-table-cell--right">
-                  <div className="account-actions">
+                <div className="flex items-center justify-end gap-2">
                     <button
-                      className="action-button"
+                    className="p-1.5 hover:bg-[#2A2F36] rounded-md transition-colors"
                       title="View Private Key"
                       onClick={() => handleShowPrivateKey(account.address)}
                     >
                       <Image src={showPasswordIcon} alt="" width={20} height={20} />
                     </button>
                     <button
-                      className="action-button"
+                    className="p-1.5 hover:bg-[#2A2F36] rounded-md transition-colors text-[#858699] hover:text-[#FF4940]"
                       title="Delete Account"
                       onClick={() => handleDeleteClick(account.address)}
                     >
@@ -142,7 +141,6 @@ const WalletManagerPage = () => {
                         <path d="M18.8504 9.14001L18.2004 19.21C18.0904 20.78 18.0004 22 15.2104 22H8.79039C6.00039 22 5.91039 20.78 5.80039 19.21L5.15039 9.14001" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                  </div>
                 </div>
               </div>
             ))}

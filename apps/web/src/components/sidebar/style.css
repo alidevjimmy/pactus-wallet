@@ -43,8 +43,24 @@
     white-space: nowrap;
 }
 
-.sidebar__lock-icon {
+.sidebar__lock-button {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+    background: transparent;
+}
+
+.sidebar__lock-button:hover {
+    background-color: var(--color-surface-light);
+}
+
+.sidebar__lock-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 /* Action buttons */

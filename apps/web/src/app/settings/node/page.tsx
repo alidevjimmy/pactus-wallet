@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import './style.css';
 import Image from 'next/image';
 import { copyIcon, successIcon } from '@/assets';
 import ConfirmModal from '@/components/confirm-modal';
@@ -54,7 +53,7 @@ const NodeManagerPage = () => {
 
   const handleAddNode = (node: { title: string; address: string }) => {
     const newNode = {
-      id: Date.now().toString(), // Generate a unique ID
+      id: Date.now().toString(),
       title: node.title,
       address: node.address,
       ping: 'Connecting...',
@@ -64,8 +63,6 @@ const NodeManagerPage = () => {
 
     setNodes(prev => [...prev, newNode]);
 
-    // Here you would normally connect to the node and update ping and blockHeight
-    // For demonstration, we're just setting mock values after a delay
     setTimeout(() => {
       setNodes(prev =>
         prev.map(n =>
@@ -77,18 +74,13 @@ const NodeManagerPage = () => {
     }, 2000);
   };
 
-  // Format number with commas
   const formatNumber = (num: number): string => {
     return num.toLocaleString();
   };
 
-  // Handle refresh for a specific node
   const handleRefreshNode = async (nodeId: string) => {
-    // Set refreshing state for this node
     setRefreshingNodes(prev => ({ ...prev, [nodeId]: true }));
 
-    // Simulate API call to refresh node data
-    // In real implementation, this would be an actual API call to get node status
     setTimeout(() => {
       setNodes(prev =>
         prev.map(node =>
@@ -101,12 +93,10 @@ const NodeManagerPage = () => {
             : node
         )
       );
-      // Clear refreshing state
       setRefreshingNodes(prev => ({ ...prev, [nodeId]: false }));
     }, 1000);
   };
 
-  // Handle toggle node enabled/disabled
   const handleToggleNode = (nodeId: string) => {
     setNodes(prev =>
       prev.map(node =>
@@ -118,59 +108,58 @@ const NodeManagerPage = () => {
   };
 
   return (
-    <div className="settings-content settings-content--full">
-      <div className="account-header">
-        <span className="account-count">{nodes.length} / <span className="account-count-max">50</span></span>
-        <div className="account-separator"></div>
-        <button className="add-account-button" onClick={() => setShowAddNodeModal(true)}>
-        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_841_2491)">
-<path d="M14.9844 6.5V4.5C14.9844 2.888 14.0964 2 12.4844 2H4.48438C2.87238 2 1.98438 2.888 1.98438 4.5V6.5C1.98438 7.41067 2.27712 8.08133 2.81445 8.5C2.27712 8.91867 1.98438 9.58933 1.98438 10.5V12.5C1.98438 14.112 2.87238 15 4.48438 15H12.4844C14.0964 15 14.9844 14.112 14.9844 12.5V10.5C14.9844 9.58933 14.6916 8.91867 14.1543 8.5C14.6916 8.08133 14.9844 7.41067 14.9844 6.5ZM13.9844 10.5V12.5C13.9844 13.5513 13.5357 14 12.4844 14H4.48438C3.43304 14 2.98438 13.5513 2.98438 12.5V10.5C2.98438 9.44867 3.43304 9 4.48438 9H12.4844C13.5357 9 13.9844 9.44867 13.9844 10.5ZM4.48438 8C3.43304 8 2.98438 7.55133 2.98438 6.5V4.5C2.98438 3.44867 3.43304 3 4.48438 3H12.4844C13.5357 3 13.9844 3.44867 13.9844 4.5V6.5C13.9844 7.55133 13.5357 8 12.4844 8H4.48438ZM10.8177 5.50798C10.8177 5.87598 10.519 6.17464 10.151 6.17464C9.78304 6.17464 9.48438 5.87598 9.48438 5.50798C9.48438 5.13998 9.78304 4.84131 10.151 4.84131C10.519 4.84131 10.8177 5.13998 10.8177 5.50798ZM12.8177 5.50798C12.8177 5.87598 12.519 6.17464 12.151 6.17464C11.783 6.17464 11.4844 5.87598 11.4844 5.50798C11.4844 5.13998 11.783 4.84131 12.151 4.84131C12.519 4.84131 12.8177 5.13998 12.8177 5.50798ZM9.48438 11.5C9.48438 11.132 9.78304 10.8333 10.151 10.8333C10.519 10.8333 10.8177 11.132 10.8177 11.5C10.8177 11.868 10.519 12.1667 10.151 12.1667C9.78304 12.1667 9.48438 11.868 9.48438 11.5ZM11.4844 11.5C11.4844 11.132 11.783 10.8333 12.151 10.8333C12.519 10.8333 12.8177 11.132 12.8177 11.5C12.8177 11.868 12.519 12.1667 12.151 12.1667C11.783 12.1667 11.4844 11.868 11.4844 11.5Z" fill="#858699"/>
-</g>
-<defs>
-<clipPath id="clip0_841_2491">
-<rect width="16" height="16" fill="white" transform="translate(0.484375 0.5)"/>
-</clipPath>
-</defs>
+    <div className="w-full bg-surface-medium rounded-lg shadow-inner overflow-hidden">
+      <div className="flex items-center justify-end gap-4 p-4 border-b border-[#1D2328]">
+        <span className="text-[#858699] text-xs">
+          {nodes.length} / <span className="text-[#4C4F6B]">50</span>
+        </span>
+        <div className="w-px h-5 bg-[#2C2D3C]"></div>
+        <button
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#1D2328] hover:bg-[#2A2F36] rounded-lg transition-colors"
+          onClick={() => setShowAddNodeModal(true)}
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 3.33334V12.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M3.33203 8H12.6654" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
 </svg>
-
           Add Node
         </button>
       </div>
 
-      <div className="settings-section node-manager">
-        <div className="wallet-table">
-          <div className="wallet-table-header">
-            <div className="wallet-table-cell">Title</div>
-            <div className="wallet-table-cell">Address</div>
-            <div className="wallet-table-cell">Ping</div>
-            <div className="wallet-table-cell">Block Height</div>
-            <div className="wallet-table-cell wallet-table-cell--right">Action</div>
+      <div className="p-4">
+        <div className="w-full rounded-lg overflow-hidden">
+          <div className="grid grid-cols-[1fr,2fr,100px,130px,120px] gap-4 px-4 py-3 text-[#858699] text-xs font-medium border-b border-[#1D2328]">
+            <div>Title</div>
+            <div>Address</div>
+            <div>Ping</div>
+            <div>Block Height</div>
+            <div className="text-right">Action</div>
           </div>
-          <div className="wallet-table-body">
+          <div className="divide-y divide-[#1D2328]">
             {nodes.map((node) => (
-              <div key={node.id} className="wallet-table-row">
-                <div className="wallet-table-cell">
-                  <div className="account-title">
+              <div key={node.id} className="grid grid-cols-[1fr,2fr,100px,130px,120px] gap-4 px-4 py-3 hover:bg-[#1D2328] transition-colors">
+                <div className="flex items-center gap-2">
                     <button
-                      className={`action-button action-button--refresh ${refreshingNodes[node.id] ? 'action-button--rotating' : ''}`}
+                    className={`p-1 rounded-md transition-colors ${
+                      refreshingNodes[node.id]
+                        ? 'animate-spin'
+                        : 'text-[#858699] hover:bg-[#2A2F36] hover:text-white'
+                    }`}
                       title="Refresh Node"
                       onClick={() => handleRefreshNode(node.id)}
                       disabled={refreshingNodes[node.id]}
                     >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-current">
                         <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C15.7 2 18.9 3.9 20.6 6.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         <path d="M22 2V6.8H17.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    {node.title}
-                  </div>
+                  <span className="text-[#D2D3E0] text-sm font-medium">{node.title}</span>
                 </div>
-                <div className="wallet-table-cell">
-                  <div className="account-address-container">
-                    <span className="account-address">{node.address}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00CC99] to-[#009966] text-sm font-medium font-mono truncate">{node.address}</span>
                     <button
-                      className="copy-button"
+                    className="p-1 text-[#858699] hover:bg-[#2A2F36] hover:text-white rounded-md transition-colors"
                       onClick={() => handleCopyAddress(node.address)}
                       aria-label="Copy address to clipboard"
                       title="Copy address to clipboard"
@@ -183,29 +172,33 @@ const NodeManagerPage = () => {
                       />
                     </button>
                   </div>
+                <div>
+                  <span className="inline-block px-2 py-1 rounded-xl bg-[rgba(0,204,153,0.1)] text-[#00CC99] text-xs font-medium">
+                    {node.ping}
+                  </span>
                 </div>
-                <div className="wallet-table-cell">
-                  <span className="node-ping">{node.ping}</span>
+                <div>
+                  <span className="inline-block px-2 py-1 rounded-xl bg-[rgba(62,116,255,0.1)] text-[#3E74FF] text-xs font-medium">
+                    {formatNumber(node.blockHeight)}
+                  </span>
                 </div>
-                <div className="wallet-table-cell">
-                  <span className="node-block-height">{formatNumber(node.blockHeight)}</span>
-                </div>
-                <div className="wallet-table-cell wallet-table-cell--right">
-                  <div className="account-actions">
+                <div className="flex items-center justify-end gap-2">
                     <button
-                      className={`switch-button ${node.enabled ? 'switch-button--enabled' : ''}`}
+                    className={`relative w-10 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#00CC99] focus:ring-offset-2 focus:ring-offset-[#15191C] ${
+                      node.enabled ? 'bg-gradient-to-r from-[#00CC99] to-[#009966]' : 'bg-[rgba(255,255,255,0.1)]'
+                    }`}
                       onClick={() => handleToggleNode(node.id)}
-                      title={node.enabled ? 'Disable Node' : 'Enable Node'}
-                      aria-label={node.enabled ? 'Disable Node' : 'Enable Node'}
                       role="switch"
                       aria-checked={node.enabled}
                     >
-                      <div className="switch-button__track">
-                        <div className="switch-button__thumb" />
-                      </div>
+                    <span
+                      className={`absolute top-1 left-1 block w-4 h-4 bg-white rounded-full transition-transform duration-200 ${
+                        node.enabled ? 'translate-x-4' : 'translate-x-0'
+                      }`}
+                    />
                     </button>
                     <button
-                      className="action-button"
+                    className="p-1.5 text-[#858699] hover:bg-[#2A2F36] hover:text-[#FF4940] rounded-md transition-colors"
                       title="Delete Node"
                       onClick={() => handleDeleteClick(node.id)}
                     >
@@ -215,7 +208,6 @@ const NodeManagerPage = () => {
                         <path d="M18.8504 9.14001L18.2004 19.21C18.0904 20.78 18.0004 22 15.2104 22H8.79039C6.00039 22 5.91039 20.78 5.80039 19.21L5.15039 9.14001" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                  </div>
                 </div>
               </div>
             ))}

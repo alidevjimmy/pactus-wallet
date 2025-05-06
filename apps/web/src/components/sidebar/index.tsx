@@ -22,18 +22,23 @@ import { useWallet } from '@/wallet';
 import { useAccount } from '@/wallet/hooks/use-account';
 import AddAccountModal from '../add-account-modal';
 import FAQModal from '../faq-modal';
+import { WalletStatus } from '@/wallet/types';
 
 // External links
 const REPOSITORY_URL = 'https://github.com/pactus-project/pactus-wallet/issues/new/choose';
 
 const Sidebar = () => {
-  const { wallet } = useWallet();
+  const { wallet, setWalletStatus } = useWallet();
   const { getAccountList } = useAccount();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false);
   const navigate = useRouter().push;
+
+  const handleLockWallet = () => {
+    setWalletStatus(WalletStatus.WALLET_LOCKED);
+  };
 
   const openAddAccountModal = () => {
     setIsAddAccountModalOpen(true);
@@ -77,7 +82,14 @@ const Sidebar = () => {
         <div className="sidebar__wallet-info">
           <span className="sidebar__wallet-emoji">😀</span>
           <h2 className="sidebar__wallet-name">{wallet?.getName()}</h2>
-          <Image src={lockIcon} alt="Wallet is locked" className="sidebar__lock-icon" />
+          <button
+            type="button"
+            onClick={handleLockWallet}
+            className="sidebar__lock-button"
+            aria-label="Lock wallet"
+          >
+            <Image src={lockIcon} alt="" aria-hidden="true" />
+          </button>
         </div>
 
         <div className="sidebar__actions">
@@ -184,7 +196,25 @@ const Sidebar = () => {
         </button>
 
         <div id="contributing-parent" className="sidebar__contributing">
-          <Image src={gradientCopyIcon} alt="" aria-hidden="true" />
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10.0013 1.66675C5.41797 1.66675 1.66797 5.41675 1.66797 10.0001C1.66797 14.5834 5.41797 18.3334 10.0013 18.3334C14.5846 18.3334 18.3346 14.5834 18.3346 10.0001C18.3346 5.41675 14.5846 1.66675 10.0013 1.66675Z" stroke="url(#paint0_linear_1234_1234)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6.66797 10.0001C6.66797 13.3334 8.0013 15.0001 10.0013 15.0001C11.918 15.0001 13.3346 13.3334 13.3346 10.0001C13.3346 6.66675 11.918 5.00008 10.0013 5.00008C8.0013 5.00008 6.66797 6.66675 6.66797 10.0001Z" stroke="url(#paint1_linear_1234_1234)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M3.33203 10H16.6654" stroke="url(#paint2_linear_1234_1234)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <defs>
+              <linearGradient id="paint0_linear_1234_1234" x1="1.66797" y1="1.66675" x2="18.3346" y2="18.3334" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#00CC99"/>
+                <stop offset="1" stopColor="#009966"/>
+              </linearGradient>
+              <linearGradient id="paint1_linear_1234_1234" x1="6.66797" y1="5.00008" x2="13.3346" y2="15.0001" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#00CC99"/>
+                <stop offset="1" stopColor="#009966"/>
+              </linearGradient>
+              <linearGradient id="paint2_linear_1234_1234" x1="3.33203" y1="10" x2="16.6654" y2="10" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#00CC99"/>
+                <stop offset="1" stopColor="#009966"/>
+              </linearGradient>
+            </defs>
+          </svg>
           <div className="sidebar__contributing-content">
             <h4 className="sidebar__contributing-title">Contributing</h4>
             <p className="sidebar__contributing-description">

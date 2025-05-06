@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './style.css';
 import TransactionDetailsModal from '../transaction-details-modal';
 
 interface Transaction {
@@ -27,14 +26,14 @@ const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ transactions,
     };
 
     return (
-        <div className="transactions-history" style={{ height }}>
-            <div className="transactions-history__table" role="table" aria-label="Transaction History">
-                <div className="transactions-history__header" role="rowgroup">
-                    <div className="transactions-history__row" role="row">
+        <div className="w-full rounded-lg bg-transparent p-2.5 overflow-hidden flex flex-col bg-[#15191C]" style={{ height }}>
+            <div className="flex flex-col w-full h-full" role="table" aria-label="Transaction History">
+                <div className="sticky top-0 bg-transparent z-10 pb-2" role="rowgroup">
+                    <div className="grid grid-cols-[1fr_1.5fr_1fr_1fr_0.8fr_0.5fr] gap-2 w-full bg-transparent" role="row">
                         {headings.map((heading, index) => (
                             <div
                                 key={`heading-${index}`}
-                                className="transactions-history__cell transactions-history__cell--header"
+                                className="p-2 text-text-tertiary text-xs font-medium leading-normal relative"
                                 role="columnheader"
                             >
                                 {heading}
@@ -44,7 +43,7 @@ const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ transactions,
                 </div>
 
                 <div
-                    className="transactions-history__body"
+                    className="overflow-y-auto overflow-x-hidden flex flex-col scrollbar-thin scrollbar-track-surface-medium scrollbar-thumb-border hover:scrollbar-thumb-text-tertiary scrollbar-track-rounded-sm scrollbar-thumb-rounded-sm"
                     role="rowgroup"
                     style={{ maxHeight: `calc(${height} - 40px)` }}
                 >
@@ -52,36 +51,43 @@ const TransactionsHistory: React.FC<TransactionsHistoryProps> = ({ transactions,
                         transactions.map((transaction, rowIndex) => (
                             <div
                                 key={`transaction-${rowIndex}`}
-                                className="transactions-history__row"
+                                className="grid grid-cols-[1fr_1.5fr_1fr_1fr_0.8fr_0.5fr] gap-2 w-full bg-transparent border-b border-[rgba(102,102,102,0.1)] last:border-b-0 hover:bg-[#1D2328]"
                                 role="row"
                             >
-                                <div className="transactions-history__cell" role="cell">
+                                <div className="p-2 text-text-secondary text-xs font-medium leading-normal truncate" role="cell">
                                     {transaction.date}
                                 </div>
                                 <div
-                                    className="transactions-history__cell transactions-history__cell--hash"
+                                    className="p-2 text-xs font-medium leading-normal truncate cursor-pointer bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent"
                                     role="cell"
                                     onClick={() => handleTransactionClick(transaction)}
-                                    style={{ cursor: 'pointer' }}
                                 >
                                     {transaction.txHash}
                                 </div>
-                                <div className="transactions-history__cell text-truncate" role="cell" title={transaction.sender}>
+                                <div
+                                    className="p-2 text-text-secondary text-xs font-medium leading-normal truncate"
+                                    role="cell"
+                                    title={transaction.sender}
+                                >
                                     {transaction.sender}
                                 </div>
-                                <div className="transactions-history__cell text-truncate" role="cell" title={transaction.receiver}>
+                                <div
+                                    className="p-2 text-text-secondary text-xs font-medium leading-normal truncate"
+                                    role="cell"
+                                    title={transaction.receiver}
+                                >
                                     {transaction.receiver}
                                 </div>
-                                <div className="transactions-history__cell" role="cell">
+                                <div className="p-2 text-text-secondary text-xs font-medium leading-normal truncate" role="cell">
                                     {transaction.amount}
                                 </div>
-                                <div className="transactions-history__cell" role="cell">
+                                <div className="p-2 text-text-secondary text-xs font-medium leading-normal truncate" role="cell">
                                     {transaction.fee}
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <div className="transactions-history__empty">
+                        <div className="flex justify-center items-center p-4 text-text-tertiary text-sm bg-transparent">
                             No transactions found
                         </div>
                     )}

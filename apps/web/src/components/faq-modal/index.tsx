@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Modal from '../modal';
-import './style.css';
 
 interface FAQItem {
   question: string;
@@ -44,21 +43,25 @@ const FAQModal: React.FC<FAQModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Frequently Asked Questions">
-      <div className="faq-modal">
-        <div className="faq-list">
+      <div className="p-4 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-track-surface-medium scrollbar-thumb-surface hover:scrollbar-thumb-surface-light scrollbar-track-rounded scrollbar-thumb-rounded">
+        <div className="flex flex-col gap-1">
           {faqData.map((faq, index) => (
             <div
               key={index}
-              className={`faq-item ${expandedIndex === index ? 'faq-item--expanded' : ''}`}
+              className={`overflow-hidden bg-transparent transition-all duration-300 ease-in-out ${
+                expandedIndex === index ? 'bg-surface' : 'hover:bg-surface'
+              }`}
             >
               <button
-                className="faq-question"
+                className="w-full h-11 flex justify-between items-center px-4 bg-transparent border-none text-text-primary text-base font-medium text-left cursor-pointer transition-all duration-300 ease-in-out hover:bg-surface"
                 onClick={() => toggleQuestion(index)}
                 aria-expanded={expandedIndex === index}
               >
                 <span>{faq.question}</span>
                 <svg
-                  className="faq-icon"
+                  className={`transition-all duration-300 ease-in-out ${
+                    expandedIndex === index ? 'text-primary' : 'text-text-secondary'
+                  } flex-shrink-0 w-5 h-5 p-0 m-0 flex items-center justify-center`}
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -93,8 +96,16 @@ const FAQModal: React.FC<FAQModalProps> = ({ isOpen, onClose }) => {
                   )}
                 </svg>
               </button>
-              <div className="faq-answer">
-                <p>{faq.answer}</p>
+              <div
+                className={`transition-all duration-300 ease-in-out px-4 ${
+                  expandedIndex === index
+                    ? 'max-h-[500px] py-2 pb-4 opacity-100'
+                    : 'max-h-0 py-0 opacity-0'
+                }`}
+              >
+                <p className="text-text-secondary text-sm leading-relaxed m-0 pr-6">
+                  {faq.answer}
+                </p>
               </div>
             </div>
           ))}

@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import Modal from '../modal';
-import './style.css';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -38,13 +37,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <div className="confirm-modal">
-        <p className="confirm-modal__message">{message}</p>
-        <div className={`confirm-modal__actions ${isDestructive ? 'confirm-modal__actions--single' : ''}`}>
+      <div className="flex flex-col gap-4 p-4">
+        <p className="text-text-secondary text-sm leading-relaxed m-0">{message}</p>
+        <div className={`flex gap-2 mt-4 ${isDestructive ? 'justify-end' : 'justify-end'}`}>
           {!isDestructive && (
             <button
               type="button"
-              className="modal-button btn btn-secondary"
+              className="flex px-3 py-2 justify-center items-center gap-2 rounded-sm bg-surface-medium border border-border-light text-text-secondary text-sm font-semibold transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={onClose}
               disabled={isSubmitting}
             >
@@ -53,7 +52,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           )}
           <button
             type="button"
-            className={`modal-button btn ${isDestructive ? 'btn-danger' : 'btn-primary'}`}
+            className={`flex px-6 py-2.5 justify-center items-center gap-2 rounded-lg font-semibold text-white transition-all duration-300 ${
+              isDestructive
+                ? 'bg-gradient-to-r from-[#8B0000] to-[#FF0000] hover:from-[#6B0000] hover:to-[#CC0000] hover:-translate-y-0.5 disabled:from-[#A88B8B] disabled:to-[#FFA0A0] disabled:transform-none'
+                : 'bg-gradient-to-r from-primary to-primary'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
             onClick={handleConfirm}
             disabled={isSubmitting}
           >

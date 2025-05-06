@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './style.css';
 import Image from 'next/image';
 import { copyIcon, successIcon } from '@/assets';
 import Modal from '../modal';
@@ -39,13 +38,15 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Transaction Details">
-      <div className="transaction-modal__content">
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">Hash</span>
-          <div className="transaction-modal__value-container">
-            <span className="transaction-modal__value transaction-modal__value--hash">{transaction.hash}</span>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">Hash</span>
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary text-sm font-medium break-all font-mono bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+              {transaction.hash}
+            </span>
             <button
-              className="transaction-modal__copy"
+              className="bg-transparent border-none p-1 cursor-pointer rounded-full transition-colors hover:bg-surface-light flex items-center justify-center"
               onClick={() => handleCopy(transaction.hash, 'hash')}
               aria-label="Copy transaction hash"
             >
@@ -59,17 +60,21 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
           </div>
         </div>
 
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">Block</span>
-          <span className="transaction-modal__value">{formatNumber(transaction.block)}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">Block</span>
+          <span className="text-text-primary text-sm font-medium break-all">
+            {formatNumber(transaction.block)}
+          </span>
         </div>
 
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">From</span>
-          <div className="transaction-modal__value-container">
-            <span className="transaction-modal__value transaction-modal__value--address">{transaction.from}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">From</span>
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary text-sm font-medium break-all font-mono bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+              {transaction.from}
+            </span>
             <button
-              className="transaction-modal__copy"
+              className="bg-transparent border-none p-1 cursor-pointer rounded-full transition-colors hover:bg-surface-light flex items-center justify-center"
               onClick={() => handleCopy(transaction.from, 'from')}
               aria-label="Copy sender address"
             >
@@ -83,12 +88,14 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
           </div>
         </div>
 
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">To</span>
-          <div className="transaction-modal__value-container">
-            <span className="transaction-modal__value transaction-modal__value--address">{transaction.to}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">To</span>
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary text-sm font-medium break-all font-mono bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
+              {transaction.to}
+            </span>
             <button
-              className="transaction-modal__copy"
+              className="bg-transparent border-none p-1 cursor-pointer rounded-full transition-colors hover:bg-surface-light flex items-center justify-center"
               onClick={() => handleCopy(transaction.to, 'to')}
               aria-label="Copy receiver address"
             >
@@ -102,23 +109,29 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
           </div>
         </div>
 
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">Value</span>
-          <span className="transaction-modal__value">{transaction.value}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">Value</span>
+          <span className="text-text-primary text-sm font-medium break-all">
+            {transaction.value}
+          </span>
         </div>
 
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">Fee</span>
-          <span className="transaction-modal__value">{transaction.fee}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">Fee</span>
+          <span className="text-text-primary text-sm font-medium break-all">
+            {transaction.fee}
+          </span>
         </div>
 
-        <div className="transaction-modal__field">
-          <span className="transaction-modal__label">Memo</span>
-          <div className="transaction-modal__value-container">
-            <span className="transaction-modal__value">{transaction.memo || '-'}</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-text-tertiary text-sm font-medium">Memo</span>
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary text-sm font-medium break-all">
+              {transaction.memo || '-'}
+            </span>
             {transaction.memo && (
               <button
-                className="transaction-modal__copy"
+                className="bg-transparent border-none p-1 cursor-pointer rounded-full transition-colors hover:bg-surface-light flex items-center justify-center"
                 onClick={() => handleCopy(transaction.memo!, 'memo')}
                 aria-label="Copy memo"
               >

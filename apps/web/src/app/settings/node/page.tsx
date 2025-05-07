@@ -1,9 +1,20 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { copyIcon, successIcon } from '@/assets';
 import ConfirmModal from '@/components/confirm-modal';
 import AddNodeModal from '@/components/add-node-modal';
+
+interface Node {
+  id: string;
+  title: string;
+  address: string;
+  ping: string;
+  blockHeight: number | string;
+  enabled: boolean;
+  username?: string;
+  password?: string;
+}
 
 // Mock data for demonstration
 const mockNodes = [
@@ -32,6 +43,160 @@ const NodeManagerPage = () => {
   const [nodes, setNodes] = useState(mockNodes);
   const [copiedAddresses, setCopiedAddresses] = useState<{[key: string]: boolean}>({});
   const [refreshingNodes, setRefreshingNodes] = useState<{[key: string]: boolean}>({});
+  const [editingNode, setEditingNode] = useState<{id: string, field: 'title' | 'address'} | null>(null);
+  const [editValue, setEditValue] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  // Initialize client-side state
+  useEffect(() => {
+    setIsClient(true);
+    const savedNodes = localStorage.getItem('pactus-nodes');
+    if (savedNodes) {
+      try {
+        setNodes(JSON.parse(savedNodes));
+      } catch (e) {
+        console.error('Failed to parse saved nodes:', e);
+      }
+    }
+  }, []);
+
+  // Save nodes to localStorage whenever they change
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('pactus-nodes', JSON.stringify(nodes));
+    }
+  }, [nodes, isClient]);
+
+  const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 5000): Promise<Response> => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        mode: 'no-cors',
+        cache: 'no-cache',
+        headers: {
+          ...options.headers,
+          'Accept': 'application/json',
+        },
+      });
+      clearTimeout(id);
+      return response;
+    } catch (error) {
+      clearTimeout(id);
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout');
+        }
+        if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+          throw new Error('Network error or CORS issue');
+        }
+      }
+      throw error;
+    }
+  };
+
+  const getBlockHeight = async (node: Node): Promise<number | string> => {
+    try {
+      // Ensure address has protocol and proper format
+      let url = node.address;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = `http://${url}`;
+      }
+      // Remove any trailing slashes
+      url = url.replace(/\/+$/, '');
+
+      const response = await fetch('/api/node', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url,
+          method: 'pactus.blockchain.get_blockchain_info',
+          params: {}
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Node error:', errorData);
+        return 'Failed';
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        console.error('Node error:', data.error);
+        return 'Failed';
+      }
+
+      return data.result?.last_block_height || 'Failed';
+    } catch (error) {
+      console.error('Error getting block height:', error);
+      return 'Failed';
+    }
+  };
+
+  const measurePing = async (address: string, username?: string, password?: string): Promise<number> => {
+    try {
+      const startTime = performance.now();
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      } as Record<string, string>;
+
+      // Add Basic Auth if credentials are provided
+      if (username && password) {
+        const auth = btoa(`${username}:${password}`);
+        headers['Authorization'] = `Basic ${auth}`;
+      }
+
+      // Ensure address has protocol and proper format
+      let url = address;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = `http://${url}`;
+      }
+      // Remove any trailing slashes
+      url = url.replace(/\/+$/, '');
+
+      await fetchWithTimeout(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'pactus.blockchain.get_block_height',
+          params: {}
+        })
+      });
+      const endTime = performance.now();
+      return Math.round(endTime - startTime);
+    } catch (error) {
+      console.error('Error measuring ping:', error);
+      return -1;
+    }
+  };
+
+  // Initial ping and block height measurement for all nodes
+  useEffect(() => {
+    if (isClient) {
+      const measureAllNodes = async () => {
+        const updatedNodes = await Promise.all(
+          nodes.map(async (node) => {
+            const ping = await measurePing(node.address, node.username, node.password);
+            const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+            const blockHeight = await getBlockHeight(node);
+            return { ...node, ping: pingText, blockHeight };
+          })
+        );
+        setNodes(updatedNodes);
+      };
+
+      measureAllNodes();
+    }
+  }, [isClient]); // Only run when isClient changes
 
   const handleDeleteClick = (id: string) => {
     setSelectedNodeId(id);
@@ -39,7 +204,8 @@ const NodeManagerPage = () => {
   };
 
   const handleDeleteConfirm = () => {
-    setNodes(nodes.filter(node => node.id !== selectedNodeId));
+    const updatedNodes = nodes.filter(node => node.id !== selectedNodeId);
+    setNodes(updatedNodes);
     setShowDeleteConfirmModal(false);
   };
 
@@ -51,11 +217,46 @@ const NodeManagerPage = () => {
     }, 2000);
   };
 
-  const handleAddNode = (node: { title: string; address: string }) => {
+  const getPingColor = (ping: number): string => {
+    if (ping === -1) return 'bg-[rgba(255,73,64,0.1)] text-[#FF4940]'; // Red for failed
+    if (ping <= 100) return 'bg-[rgba(0,204,153,0.1)] text-[#00CC99]'; // Green for good
+    if (ping <= 300) return 'bg-[rgba(255,171,0,0.1)] text-[#FFAB00]'; // Orange for medium
+    if (ping <= 1000) return 'bg-[rgba(255,171,0,0.1)] text-[#FFAB00]'; // Orange for high
+    return 'bg-[rgba(255,73,64,0.1)] text-[#FF4940]'; // Red for very high (>1000ms)
+  };
+
+  const handleRefreshNode = async (nodeId: string) => {
+    setRefreshingNodes(prev => ({ ...prev, [nodeId]: true }));
+
+    const node = nodes.find(n => n.id === nodeId);
+    if (node) {
+      const ping = await measurePing(node.address, node.username, node.password);
+      const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+      const blockHeight = await getBlockHeight(node);
+
+      setNodes(prev =>
+        prev.map(n =>
+          n.id === nodeId
+            ? {
+                ...n,
+                ping: pingText,
+                blockHeight
+              }
+            : n
+        )
+      );
+    }
+
+    setRefreshingNodes(prev => ({ ...prev, [nodeId]: false }));
+  };
+
+  const handleAddNode = async (node: { title: string; address: string; username?: string; password?: string }) => {
     const newNode = {
       id: Date.now().toString(),
       title: node.title,
       address: node.address,
+      username: node.username,
+      password: node.password,
       ping: 'Connecting...',
       blockHeight: 0,
       enabled: true
@@ -63,38 +264,21 @@ const NodeManagerPage = () => {
 
     setNodes(prev => [...prev, newNode]);
 
-    setTimeout(() => {
-      setNodes(prev =>
-        prev.map(n =>
-          n.id === newNode.id
-            ? { ...n, ping: `${Math.floor(Math.random() * 100) + 20}ms`, blockHeight: 123456 }
-            : n
-        )
-      );
-    }, 2000);
+    const ping = await measurePing(node.address, node.username, node.password);
+    const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+    const blockHeight = await getBlockHeight(newNode);
+
+    setNodes(prev =>
+      prev.map(n =>
+        n.id === newNode.id
+          ? { ...n, ping: pingText, blockHeight }
+          : n
+      )
+    );
   };
 
   const formatNumber = (num: number): string => {
     return num.toLocaleString();
-  };
-
-  const handleRefreshNode = async (nodeId: string) => {
-    setRefreshingNodes(prev => ({ ...prev, [nodeId]: true }));
-
-    setTimeout(() => {
-      setNodes(prev =>
-        prev.map(node =>
-          node.id === nodeId
-            ? {
-                ...node,
-                ping: `${Math.floor(Math.random() * 100) + 20}ms`,
-                blockHeight: node.blockHeight + Math.floor(Math.random() * 10) + 1
-              }
-            : node
-        )
-      );
-      setRefreshingNodes(prev => ({ ...prev, [nodeId]: false }));
-    }, 1000);
   };
 
   const handleToggleNode = (nodeId: string) => {
@@ -106,6 +290,63 @@ const NodeManagerPage = () => {
       )
     );
   };
+
+  const handleEditStart = (nodeId: string, field: 'title' | 'address', currentValue: string) => {
+    setEditingNode({ id: nodeId, field });
+    setEditValue(currentValue || '');
+  };
+
+  const handleEditSave = async () => {
+    if (!editingNode) return;
+
+    // Don't allow empty titles or addresses
+    if (!editValue.trim()) {
+      return;
+    }
+
+    const updatedNodes = nodes.map(node =>
+      node.id === editingNode.id
+        ? { ...node, [editingNode.field]: editValue.trim() }
+        : node
+    );
+
+    setNodes(updatedNodes);
+
+    // If address was changed, refresh the ping
+    if (editingNode.field === 'address') {
+      const ping = await measurePing(editValue, nodes.find(n => n.id === editingNode.id)?.username, nodes.find(n => n.id === editingNode.id)?.password);
+      const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+
+      setNodes(prev =>
+        prev.map(node =>
+          node.id === editingNode.id
+            ? { ...node, ping: pingText }
+            : node
+        )
+      );
+    }
+
+    setEditingNode(null);
+    setEditValue('');
+  };
+
+  const handleEditCancel = () => {
+    setEditingNode(null);
+    setEditValue('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleEditSave();
+    } else if (e.key === 'Escape') {
+      handleEditCancel();
+    }
+  };
+
+  // Don't render anything until we're on the client
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="w-full bg-surface-medium rounded-lg shadow-inner overflow-hidden">
@@ -139,47 +380,88 @@ const NodeManagerPage = () => {
             {nodes.map((node) => (
               <div key={node.id} className="grid grid-cols-[1fr,2fr,100px,130px,120px] gap-4 px-4 py-3 hover:bg-[#1D2328] transition-colors">
                 <div className="flex items-center gap-2">
-                    <button
+                  <button
                     className={`p-1 rounded-md transition-colors ${
                       refreshingNodes[node.id]
                         ? 'animate-spin'
                         : 'text-[#858699] hover:bg-[#2A2F36] hover:text-white'
                     }`}
-                      title="Refresh Node"
-                      onClick={() => handleRefreshNode(node.id)}
-                      disabled={refreshingNodes[node.id]}
-                    >
+                    title="Refresh Node"
+                    onClick={() => handleRefreshNode(node.id)}
+                    disabled={refreshingNodes[node.id]}
+                  >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-current">
-                        <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C15.7 2 18.9 3.9 20.6 6.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M22 2V6.8H17.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
-                  <span className="text-[#D2D3E0] text-sm font-medium">{node.title}</span>
+                      <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C15.7 2 18.9 3.9 20.6 6.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M22 2V6.8H17.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  {editingNode?.id === node.id && editingNode.field === 'title' ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      onBlur={handleEditSave}
+                      className="bg-[#2A2F36] text-[#D2D3E0] text-sm font-medium px-2 py-1 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#00CC99]"
+                      autoFocus
+                      placeholder="Enter node title"
+                    />
+                  ) : (
+                    <span
+                      className="text-[#D2D3E0] text-sm font-medium cursor-pointer hover:text-white"
+                      onClick={() => handleEditStart(node.id, 'title', node.title)}
+                    >
+                      {node.title || 'Untitled Node'}
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00CC99] to-[#009966] text-sm font-medium font-mono truncate">{node.address}</span>
-                    <button
-                    className="p-1 text-[#858699] hover:bg-[#2A2F36] hover:text-white rounded-md transition-colors"
-                      onClick={() => handleCopyAddress(node.address)}
-                      aria-label="Copy address to clipboard"
-                      title="Copy address to clipboard"
+                  {editingNode?.id === node.id && editingNode.field === 'address' ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      onBlur={handleEditSave}
+                      className="bg-[#2A2F36] text-transparent bg-clip-text bg-gradient-to-r from-[#00CC99] to-[#009966] text-sm font-medium font-mono px-2 py-1 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#00CC99]"
+                      autoFocus
+                      placeholder="Enter node address (e.g., 192.168.1.1:8080 or node1.pactus.org:8080)"
+                    />
+                  ) : (
+                    <span
+                      className="text-transparent bg-clip-text bg-gradient-to-r from-[#00CC99] to-[#009966] text-sm font-medium font-mono truncate cursor-pointer hover:opacity-80"
+                      onClick={() => handleEditStart(node.id, 'address', node.address)}
                     >
-                      <Image
-                        src={copiedAddresses[node.address] ? successIcon : copyIcon}
-                        alt={copiedAddresses[node.address] ? 'Copied successfully' : 'Copy to clipboard'}
-                        width={20}
-                        height={20}
-                      />
-                    </button>
-                  </div>
+                      {node.address || 'No address set'}
+                    </span>
+                  )}
+                  <button
+                    className="p-1 text-[#858699] hover:bg-[#2A2F36] hover:text-white rounded-md transition-colors"
+                    onClick={() => handleCopyAddress(node.address)}
+                    aria-label="Copy address to clipboard"
+                    title="Copy address to clipboard"
+                    disabled={!node.address}
+                  >
+                    <Image
+                      src={copiedAddresses[node.address] ? successIcon : copyIcon}
+                      alt={copiedAddresses[node.address] ? 'Copied successfully' : 'Copy to clipboard'}
+                      width={20}
+                      height={20}
+                    />
+                  </button>
+                </div>
                 <div>
-                  <span className="inline-block px-2 py-1 rounded-xl bg-[rgba(0,204,153,0.1)] text-[#00CC99] text-xs font-medium">
+                  <span className={`inline-block px-2 py-1 rounded-xl ${getPingColor(parseInt(node.ping))} text-xs font-medium`}>
                     {node.ping}
                   </span>
                 </div>
                 <div>
-                  <span className="inline-block px-2 py-1 rounded-xl bg-[rgba(62,116,255,0.1)] text-[#3E74FF] text-xs font-medium">
-                    {formatNumber(node.blockHeight)}
+                  <span className={`inline-block px-2 py-1 rounded-xl ${
+                    typeof node.blockHeight === 'number'
+                      ? 'bg-[rgba(62,116,255,0.1)] text-[#3E74FF]'
+                      : 'bg-[rgba(255,73,64,0.1)] text-[#FF4940]'
+                  } text-xs font-medium`}>
+                    {typeof node.blockHeight === 'number' ? formatNumber(node.blockHeight) : node.blockHeight}
                   </span>
                 </div>
                 <div className="flex items-center justify-end gap-2">

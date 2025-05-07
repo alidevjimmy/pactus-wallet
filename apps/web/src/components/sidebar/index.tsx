@@ -145,16 +145,6 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-
-        <button
-          type="button"
-          className={`sidebar__nav-item ${isActiveRoute('/activity') ? 'sidebar__nav-item--active' : ''}`}
-          onClick={() => navigate('/activity')}
-          aria-current={isActiveRoute('/activity') ? 'page' : undefined}
-        >
-          <Image src={activityIcon} alt="" aria-hidden="true" />
-          <span className="sidebar__nav-label">Activity</span>
-        </button>
       </nav>
 
       <div className="sidebar__footer">

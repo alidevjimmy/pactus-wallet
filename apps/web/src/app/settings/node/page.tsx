@@ -121,21 +121,22 @@ const NodeManagerPage = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Node error:', errorData);
         return 'Failed';
       }
 
       const data = await response.json();
 
-      if (data.error) {
-        console.error('Node error:', data.error);
+      if (data.error || !data.result) {
         return 'Failed';
       }
 
-      return data.result?.last_block_height || 'Failed';
-    } catch (error) {
-      console.error('Error getting block height:', error);
+      const height = data.result.last_block_height;
+      if (typeof height !== 'number' || isNaN(height)) {
+        return 'Failed';
+      }
+
+      return height;
+    } catch {
       return 'Failed';
     }
   };
@@ -183,15 +184,21 @@ const NodeManagerPage = () => {
   useEffect(() => {
     if (isClient) {
       const measureAllNodes = async () => {
-        const updatedNodes = await Promise.all(
-          nodes.map(async (node) => {
-            const ping = await measurePing(node.address, node.username, node.password);
-            const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
-            const blockHeight = await getBlockHeight(node);
-            return { ...node, ping: pingText, blockHeight };
-          })
-        );
-        setNodes(updatedNodes);
+        try {
+          const updatedNodes = await Promise.all(
+            nodes.map(async (node) => {
+              const ping = await measurePing(node.address, node.username, node.password);
+              const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+              const blockHeight = await getBlockHeight(node);
+              return { ...node, ping: pingText, blockHeight };
+            })
+          );
+          setNodes(updatedNodes);
+        } catch (error) {
+          // If there's an error, don't update the nodes state
+          // This prevents potential state corruption
+          console.error('Error measuring nodes:', error);
+        }
       };
 
       measureAllNodes();
@@ -226,55 +233,66 @@ const NodeManagerPage = () => {
   };
 
   const handleRefreshNode = async (nodeId: string) => {
-    setRefreshingNodes(prev => ({ ...prev, [nodeId]: true }));
+    try {
+      setRefreshingNodes(prev => ({ ...prev, [nodeId]: true }));
 
-    const node = nodes.find(n => n.id === nodeId);
-    if (node) {
-      const ping = await measurePing(node.address, node.username, node.password);
-      const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
-      const blockHeight = await getBlockHeight(node);
+      const node = nodes.find(n => n.id === nodeId);
+      if (node) {
+        const ping = await measurePing(node.address, node.username, node.password);
+        const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+        const blockHeight = await getBlockHeight(node);
 
-      setNodes(prev =>
-        prev.map(n =>
-          n.id === nodeId
-            ? {
-                ...n,
-                ping: pingText,
-                blockHeight
-              }
-            : n
-        )
-      );
+        setNodes(prev =>
+          prev.map(n =>
+            n.id === nodeId
+              ? {
+                  ...n,
+                  ping: pingText,
+                  blockHeight
+                }
+              : n
+          )
+        );
+      }
+    } catch (error) {
+      // If there's an error, don't update the node state
+      console.error('Error refreshing node:', error);
+    } finally {
+      setRefreshingNodes(prev => ({ ...prev, [nodeId]: false }));
     }
-
-    setRefreshingNodes(prev => ({ ...prev, [nodeId]: false }));
   };
 
   const handleAddNode = async (node: { title: string; address: string; username?: string; password?: string }) => {
-    const newNode = {
-      id: Date.now().toString(),
-      title: node.title,
-      address: node.address,
-      username: node.username,
-      password: node.password,
-      ping: 'Connecting...',
-      blockHeight: 0,
-      enabled: true
-    };
+    try {
+      const newNode = {
+        id: Date.now().toString(),
+        title: node.title,
+        address: node.address,
+        username: node.username,
+        password: node.password,
+        ping: 'Connecting...',
+        blockHeight: 0,
+        enabled: true
+      };
 
-    setNodes(prev => [...prev, newNode]);
+      setNodes(prev => [...prev, newNode]);
 
-    const ping = await measurePing(node.address, node.username, node.password);
-    const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
-    const blockHeight = await getBlockHeight(newNode);
+      const ping = await measurePing(node.address, node.username, node.password);
+      const pingText = ping === -1 ? 'Failed' : `${ping}ms`;
+      const blockHeight = await getBlockHeight(newNode);
 
-    setNodes(prev =>
-      prev.map(n =>
-        n.id === newNode.id
-          ? { ...n, ping: pingText, blockHeight }
-          : n
-      )
-    );
+      setNodes(prev =>
+        prev.map(n =>
+          n.id === newNode.id
+            ? { ...n, ping: pingText, blockHeight }
+            : n
+        )
+      );
+    } catch (error) {
+      // If there's an error, remove the node we just added
+      setNodes(prev => prev.filter(n => n.id !== Date.now().toString()));
+      console.error('Error adding node:', error);
+    }
   };
 
   const formatNumber = (num: number): string => {

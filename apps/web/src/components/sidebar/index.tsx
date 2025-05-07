@@ -22,6 +22,7 @@ import { useWallet } from '@/wallet';
 import { useAccount } from '@/wallet/hooks/use-account';
 import AddAccountModal from '../add-account-modal';
 import FAQModal from '../faq-modal';
+import SearchModal from '../search-modal';
 import { WalletStatus } from '@/wallet/types';
 
 // External links
@@ -34,6 +35,7 @@ const Sidebar = () => {
   const searchParams = useSearchParams();
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const navigate = useRouter().push;
 
   const handleLockWallet = () => {
@@ -54,6 +56,14 @@ const Sidebar = () => {
 
   const closeFAQModal = () => {
     setIsFAQModalOpen(false);
+  };
+
+  const openSearchModal = () => {
+    setIsSearchModalOpen(true);
+  };
+
+  const closeSearchModal = () => {
+    setIsSearchModalOpen(false);
   };
 
   const parseRoute = (route: string) => {
@@ -106,6 +116,7 @@ const Sidebar = () => {
           <button
             type="button"
             className="sidebar__action-button sidebar__search-button"
+            onClick={openSearchModal}
             aria-label="Search accounts"
           >
             <Image src={searchIcon} alt="" aria-hidden="true" width={16} height={16} />
@@ -225,6 +236,7 @@ const Sidebar = () => {
 
       <AddAccountModal isOpen={isAddAccountModalOpen} onClose={closeAddAccountModal} />
       <FAQModal isOpen={isFAQModalOpen} onClose={closeFAQModal} />
+      <SearchModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
     </aside>
   );
 };

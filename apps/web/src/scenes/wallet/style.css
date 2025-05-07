@@ -16,7 +16,7 @@
   flex-direction: column;
   margin-left: auto;
   position: relative;
-  z-index: 1;
+  z-index: -1;
 }
 
 /* Balance card section */

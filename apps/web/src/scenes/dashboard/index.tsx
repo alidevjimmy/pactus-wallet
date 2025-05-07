@@ -25,7 +25,7 @@ const Dashboard = () => {
     >
       <main className="flex w-full min-h-screen">
         <Sidebar />
-        <div className="w-[calc(100%-219px)] flex flex-col ml-auto">
+        <div className="w-[calc(100%-219px)] flex flex-col ml-auto z-[1]">
           <Header title="Overview" />
 
           <section className="w-[98%] mx-auto mt-4 h-[349px] rounded-lg bg-surface-medium shadow-inner">
@@ -75,7 +75,7 @@ const Dashboard = () => {
             </div>
           </section>
 
-          <section className="w-[98%] mx-auto my-[1%] rounded-lg bg-surface-medium shadow-inner">
+          <section className="w-[98%] mx-auto my-[1%] rounded-lg bg-surface-medium shadow-inner z-[-1]">
             <div className="grid grid-cols-[200px,1fr,auto] items-center gap-4 px-6 pt-6 pb-4">
               <h2 className="text-[#D2D3E0] text-lg font-semibold">Overall Activity</h2>
 
